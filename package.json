@@ -1,0 +1,14 @@
+{
+  "name": "evalai-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "bootstrap": "npm install && npm install --prefix server && npm install --prefix client",
+    "dev": "concurrently \"npm run dev --prefix client\" \"npm start --prefix server\"",
+    "client": "npm run dev --prefix client",
+    "server": "npm start --prefix server"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
