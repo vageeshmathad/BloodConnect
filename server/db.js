@@ -1,4 +1,4 @@
-import sqlite3 from 'sqlite3';
+let sqlite3 = null;
 import path from 'path';
 import { fileURLToPath } from 'url';
 import bcrypt from 'bcryptjs';
@@ -199,6 +199,9 @@ export const initDb = async () => {
 
 // --- Setup SQLite Database fallback ---
 const setupSqlite = async () => {
+  if (!sqlite3) {
+    sqlite3 = (await import('sqlite3')).default;
+  }
   return new Promise((resolve, reject) => {
     sqliteDb = new sqlite3.Database(SQLITE_DB_PATH, async (err) => {
       if (err) {
