@@ -8,7 +8,7 @@ import InteractiveMap from './components/InteractiveMap';
 
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://localhost:5000'
-  : 'https://bloodconnect-2-l0wd.onrender.com';
+  : 'https://bloodconnect-1-noze.onrender.com';
 
 // Seed data with clinical-grade donor profiles
 const INITIAL_LOCAL_DONORS = [
