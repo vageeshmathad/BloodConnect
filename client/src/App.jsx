@@ -208,7 +208,7 @@ export default function App() {
   const verifyBackendStatus = async () => {
     setCheckingHealth(true);
     try {
-      const res = await fetch('https://bloodconnect-2-l0wd.onrender.com/');
+      const res = await fetch('http://localhost:5000/');
       if (res.ok) {
         const data = await res.json();
         setServerOnline(true);
@@ -288,7 +288,7 @@ export default function App() {
     
     if (serverOnline) {
       try {
-        const queryUrl = `https://bloodconnect-2-l0wd.onrender.com/api/blood/search?bloodGroup=${encodeURIComponent(searchBloodGroup)}&radius=${searchRadius}&latitude=${userLocation.latitude}&longitude=${userLocation.longitude}`;
+        const queryUrl = `http://localhost:5000/api/blood/search?bloodGroup=${encodeURIComponent(searchBloodGroup)}&radius=${searchRadius}&latitude=${userLocation.latitude}&longitude=${userLocation.longitude}`;
         const response = await fetch(queryUrl);
         const data = await response.json();
         
@@ -420,7 +420,7 @@ export default function App() {
 
     if (serverOnline) {
       try {
-        const res = await fetch('https://bloodconnect-2-l0wd.onrender.com/api/donors/register', {
+        const res = await fetch('http://localhost:5000/api/donors/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -487,7 +487,7 @@ export default function App() {
 
     if (serverOnline) {
       try {
-        const res = await fetch('https://bloodconnect-2-l0wd.onrender.com/api/donors/login', {
+        const res = await fetch('http://localhost:5000/api/donors/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(donorLoginForm)
@@ -563,7 +563,7 @@ export default function App() {
 
     if (serverOnline) {
       try {
-        const res = await fetch('https://bloodconnect-2-l0wd.onrender.com/api/donors/toggle-availability', {
+        const res = await fetch('http://localhost:5000/api/donors/toggle-availability', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: loggedInDonor.email, isAvailable: targetStatus })
@@ -618,7 +618,7 @@ export default function App() {
 
     if (serverOnline) {
       try {
-        const res = await fetch('https://bloodconnect-2-l0wd.onrender.com/api/bloodbanks/register', {
+        const res = await fetch('http://localhost:5000/api/bloodbanks/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -678,7 +678,7 @@ export default function App() {
 
     if (serverOnline) {
       try {
-        const res = await fetch(`https://bloodconnect-2-l0wd.onrender.com/api/bloodbanks/${adminSelectedBank.id}/inventory`, {
+        const res = await fetch(`http://localhost:5000/api/bloodbanks/${adminSelectedBank.id}/inventory`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ inventory: updatedInventory })
