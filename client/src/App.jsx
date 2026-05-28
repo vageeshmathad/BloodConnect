@@ -743,7 +743,7 @@ export default function App() {
             </div>
             <div>
               <span className="font-display font-extrabold text-lg tracking-tight bg-gradient-to-r from-red-500 to-red-600 dark:from-red-400 dark:to-red-500 bg-clip-text text-transparent">
-                BloodConnect
+                BloodFinder
               </span>
               <span className="hidden md:inline-block ml-2 text-[9px] font-black uppercase text-slate-400 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-1.5 py-0.5 rounded font-mono">
                 EMERGENCY DECK v2
@@ -948,7 +948,7 @@ export default function App() {
                 Emergency Platform Pillars
               </h2>
               <p className="text-slate-600 dark:text-slate-400 text-xs md:text-sm leading-relaxed font-medium">
-                BloodConnect operates on clinical accuracy, instant radial geofencing, and immediate communication.
+                BloodFinder operates on clinical accuracy, instant radial geofencing, and immediate communication.
               </p>
             </div>
 
@@ -2152,11 +2152,11 @@ export default function App() {
           <div className="flex items-center gap-2">
             <Heart className="w-5 h-5 text-red-500 fill-red-500" />
             <span className="font-bold text-slate-600 dark:text-slate-400">
-              BloodConnect Emergency Network
+              BloodFinder Emergency Network
             </span>
           </div>
           <div>
-            <p className="text-[10px] font-mono text-slate-450 dark:text-slate-500">© 2026 BloodConnect. All rights reserved.</p>
+            <p className="text-[10px] font-mono text-slate-450 dark:text-slate-500">© 2026 BloodFinder. All rights reserved.</p>
           </div>
         </div>
       </footer>
