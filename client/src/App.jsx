@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Heart, Phone, Navigation, User, Search, MapPin, Landmark, 
   Activity, Check, X, ShieldAlert, Compass, RotateCw, Plus, 
-  Settings, LogOut, Sun, Moon, AlertTriangle, ArrowRight, Eye, Key, LogIn, Lock, Mail, Award, Calendar, CheckSquare, ChevronDown, Radio, ShieldCheck, MessageSquare, Send, Upload, EyeOff, RefreshCw
+  Settings, LogOut, Sun, Moon, AlertTriangle, ArrowRight, Eye, Key, LogIn, Lock, Mail, Award, Calendar, CheckSquare, ChevronDown, Radio, ShieldCheck, MessageSquare, Send, Upload, EyeOff, RefreshCw, Syringe, Building2
 } from 'lucide-react';
 import InteractiveMap from './components/InteractiveMap';
 
@@ -106,7 +106,7 @@ export default function App() {
   const [checkingHealth, setCheckingHealth] = useState(true);
 
   // --- Coordinates center ---
-  const [userLocation, setUserLocation] = useState({ latitude: 12.9716, longitude: 77.5946 });
+  const [userLocation, setUserLocation] = useState({ latitude: 12.9650, longitude: 77.5870 }); // Default centered around Hubballi
   const [locationName, setLocationName] = useState('Hubballi Node');
 
   // --- Search parameters ---
@@ -193,7 +193,7 @@ export default function App() {
 
   // --- Simulated Active Dispatch Radar logs ---
   const [radarLogs, setRadarLogs] = useState([
-    { id: 1, text: "O- Negative emergency dispatch active near Indiranagar", time: "Just now", type: "match" },
+    { id: 1, text: "O- Negative emergency dispatch active near Hubballi", time: "Just now", type: "match" },
     { id: 2, text: "Donor Amit Patel unlocked contact for coordination", time: "3m ago", type: "active" },
     { id: 3, text: "KIMS Blood Bank Hubli inventory modified", time: "8m ago", type: "bank" }
   ]);
@@ -751,7 +751,7 @@ export default function App() {
     }`}>
       
       {/* 1. Global Glassmorphic Header */}
-      <header className="sticky top-0 z-40 bg-white/90 dark:bg-[#090D16]/80 border-b border-slate-200 dark:border-slate-850 shadow-sm backdrop-blur-md transition-colors select-none">
+      <header className="sticky top-0 z-45 bg-[#090D16]/90 border-b border-slate-850 shadow-sm backdrop-blur-md transition-colors select-none">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           
           {/* Logo brand */}
@@ -763,18 +763,27 @@ export default function App() {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             className="flex items-center gap-2.5 group text-left cursor-pointer bg-transparent border-0 outline-none">
-            <div className="w-8.5 h-8.5 rounded-xl bg-gradient-to-tr from-red-600 to-red-500 flex items-center justify-center shadow-lg shadow-red-500/20 group-hover:scale-105 transition-all">
+            <div className="w-8.5 h-8.5 rounded-xl bg-gradient-to-tr from-red-650 to-red-500 flex items-center justify-center shadow-lg shadow-red-500/20 group-hover:scale-105 transition-all">
               <Heart className="w-5 h-5 text-white fill-white" />
             </div>
             <div>
-              <span className="font-display font-extrabold text-lg tracking-tight bg-gradient-to-r from-red-500 to-red-600 dark:from-red-400 dark:to-red-500 bg-clip-text text-transparent">
+              <span className="font-display font-extrabold text-lg tracking-tight bg-gradient-to-r from-red-400 to-red-500 bg-clip-text text-transparent">
                 OneBlood
               </span>
-              <span className="hidden md:inline-block ml-2 text-[9px] font-black uppercase text-red-500 dark:text-red-400 bg-red-500/10 border border-red-500/20 px-1.5 py-0.5 rounded font-mono">
+              <span className="hidden md:inline-block ml-2 text-[9px] font-black uppercase text-red-450 bg-red-500/10 border border-red-500/20 px-1.5 py-0.5 rounded font-mono">
                 SECURE NETWORK v2.4
               </span>
             </div>
           </button>
+
+          {/* Center public headers */}
+          {!isLoggedIn && (
+            <div className="hidden md:flex gap-5 text-xs font-bold text-slate-300">
+              <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-red-500 transition-colors bg-transparent border-none cursor-pointer">Home</button>
+              <button className="hover:text-red-500 transition-colors bg-transparent border-none cursor-pointer flex items-center gap-1">📋 Notice Board</button>
+              <button className="hover:text-red-500 transition-colors bg-transparent border-none cursor-pointer">How It Works</button>
+            </div>
+          )}
 
           {/* Right Panel Header Roles */}
           <div className="flex items-center gap-3">
@@ -782,13 +791,13 @@ export default function App() {
               <div className="flex items-center gap-3">
                 {/* Unified Role Switcher Selector Dropdown */}
                 <div className="relative group">
-                  <button className="text-xs bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-3 py-2 rounded-lg font-bold flex items-center gap-1.5 text-slate-750 dark:text-slate-200 cursor-pointer shadow-sm">
+                  <button className="text-xs bg-slate-900 border border-slate-800 px-3 py-2 rounded-lg font-bold flex items-center gap-1.5 text-slate-200 cursor-pointer shadow-sm">
                     <Activity className="w-3.5 h-3.5 text-red-500" />
                     <span>Role: <b className="capitalize text-red-500 font-extrabold">{userRole === 'patient' ? 'Seeker' : userRole === 'blood_bank' ? 'Blood Bank' : userRole}</b></span>
                     <ChevronDown className="w-3 h-3 text-slate-400" />
                   </button>
                   {/* Dropdown Menu */}
-                  <div className="absolute right-0 mt-1.5 w-48 bg-white dark:bg-[#111625] border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl overflow-hidden hidden group-hover:block z-50 font-sans">
+                  <div className="absolute right-0 mt-1.5 w-48 bg-[#111625] border border-slate-800 rounded-xl shadow-xl overflow-hidden hidden group-hover:block z-50 font-sans">
                     {[
                       { role: 'patient', label: '🩺 Seeker (Patient)' },
                       { role: 'donor', label: '🩸 Voluntary Donor' },
@@ -804,7 +813,7 @@ export default function App() {
                           }
                           triggerToast(`Switched to ${item.label} Dashboard`, "success");
                         }}
-                        className="w-full text-left px-4 py-2.5 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-250 cursor-pointer border-none bg-transparent">
+                        className="w-full text-left px-4 py-2.5 text-xs font-semibold hover:bg-slate-850 text-slate-250 cursor-pointer border-none bg-transparent">
                         {item.label}
                       </button>
                     ))}
@@ -829,23 +838,23 @@ export default function App() {
                     setAuthMode('login');
                     setActiveLoginType('donor');
                   }}
-                  className="text-xs bg-transparent border border-slate-200 dark:border-slate-800 font-extrabold px-3.5 py-2 rounded-lg text-slate-755 dark:text-slate-200 hover:border-slate-350 cursor-pointer">
-                  Donor Login
+                  className="text-xs bg-transparent border border-slate-800 font-extrabold px-3.5 py-2 rounded-lg text-slate-200 hover:border-slate-350 cursor-pointer">
+                  Login
                 </button>
                 <button 
                   onClick={() => {
                     setAuthMode('register');
                     setActiveLoginType('patient');
                   }}
-                  className="text-xs bg-red-600 hover:bg-red-750 text-white font-extrabold px-3.5 py-2 rounded-lg shadow-md shadow-red-500/15 cursor-pointer border-none">
-                  Register Account
+                  className="text-xs bg-red-650 hover:bg-red-700 text-white font-extrabold px-3.5 py-2 rounded-lg shadow-md shadow-red-500/15 cursor-pointer border-none">
+                  Sign Up
                 </button>
               </div>
             )}
 
             <button 
               onClick={() => setDarkMode(!darkMode)}
-              className="w-8.5 h-8.5 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 flex items-center justify-center transition-colors cursor-pointer bg-transparent">
+              className="w-8.5 h-8.5 rounded-lg border border-slate-800 text-slate-500 hover:text-red-500 flex items-center justify-center transition-colors cursor-pointer bg-transparent">
               {darkMode ? <Sun className="w-4.5 h-4.5" /> : <Moon className="w-4.5 h-4.5" />}
             </button>
           </div>
@@ -854,11 +863,11 @@ export default function App() {
 
       {/* Global Toast Alerts */}
       {toast && (
-        <div className="fixed bottom-5 right-5 z-50 p-4 rounded-xl border shadow-xl flex items-center gap-2.5 max-w-sm animate-in slide-in-from-bottom-5 duration-200 bg-white dark:bg-[#111625] border-slate-200 dark:border-slate-800 transition-colors">
+        <div className="fixed bottom-5 right-5 z-50 p-4 rounded-xl border shadow-xl flex items-center gap-2.5 max-w-sm animate-in slide-in-from-bottom-5 duration-200 bg-[#111625] border-slate-800 transition-colors">
           <span className={`w-2 h-2 rounded-full flex-shrink-0 animate-ping ${
             toast.type === 'error' ? 'bg-red-500' : toast.type === 'warning' ? 'bg-amber-500' : toast.type === 'info' ? 'bg-blue-500' : 'bg-emerald-500'
           }`} />
-          <p className="text-xs font-bold text-slate-750 dark:text-slate-200 leading-normal font-sans">{toast.message}</p>
+          <p className="text-xs font-bold text-slate-200 leading-normal font-sans">{toast.message}</p>
         </div>
       )}
 
@@ -866,411 +875,483 @@ export default function App() {
       {/* 🚀 ENTRY STATE: ELITE VISUAL ONBOARDING & CHOICE PATHS */}
       {/* ======================================================== */}
       {!isLoggedIn ? (
-        <div className="max-w-6xl mx-auto px-4 py-12 space-y-16">
+        <div className="space-y-16 py-12 animate-in fade-in duration-300">
           
-          {authMode === 'select' && (
-            <div className="max-w-2xl mx-auto bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-3xl p-8 shadow-2xl text-center space-y-8 animate-in fade-in zoom-in-95 duration-300">
-              
-              <div className="flex justify-center">
-                <div className="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/25 flex items-center justify-center text-red-500 shadow-inner">
-                  <Heart className="w-6 h-6 fill-red-500" />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <h1 className="font-display font-black text-3xl md:text-4xl text-white tracking-tight">Join OneBlood</h1>
-                <p className="text-xs text-slate-400 font-medium">Let's start with a simple question to get you to the right place.</p>
-              </div>
-
-              <span className="block text-[10px] font-black uppercase tracking-widest text-slate-500 font-mono">— ARE YOU A DONOR, OR ARE YOU LOOKING FOR ONE? —</span>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+          <div className="max-w-6xl mx-auto px-4">
+            {authMode === 'select' && (
+              <div className="max-w-2xl mx-auto bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-3xl p-8 shadow-2xl text-center space-y-8 animate-in fade-in zoom-in-95 duration-300">
                 
-                {/* Option A: I want to donate */}
-                <button
-                  onClick={() => {
-                    setAuthMode('register');
-                    setActiveLoginType('donor');
-                  }}
-                  className="bg-slate-950/40 hover:bg-slate-900/80 border border-slate-800 hover:border-red-500/30 p-6 rounded-2xl text-left transition-all group cursor-pointer h-full flex flex-col justify-between select-none">
-                  <div>
-                    <div className="w-9 h-9 rounded-lg bg-red-500/10 flex items-center justify-center text-red-500 group-hover:scale-105 transition-transform mb-4">
-                      <Heart className="w-5 h-5 fill-red-500" />
-                    </div>
-                    <h3 className="font-display font-bold text-base text-white">I want to donate</h3>
-                    <p className="text-[11px] text-slate-400 leading-relaxed mt-2 font-medium">
-                      Help someone in need. Register as a voluntary donor and save lives when it counts.
-                    </p>
+                <div className="flex justify-center">
+                  <div className="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/25 flex items-center justify-center text-red-500 shadow-inner">
+                    <Heart className="w-6 h-6 fill-red-500" />
                   </div>
-                  <span className="mt-6 inline-flex items-center gap-1.5 px-3 py-1 bg-slate-800 text-[10.5px] font-black rounded-lg text-slate-300 font-mono tracking-wide group-hover:text-red-400 group-hover:bg-red-500/10">
-                    I'm a Donor ➔
-                  </span>
-                </button>
-
-                {/* Option B: I'm looking for blood */}
-                <button
-                  onClick={() => {
-                    setAuthMode('register');
-                    setActiveLoginType('patient');
-                  }}
-                  className="bg-slate-950/40 hover:bg-slate-900/80 border border-slate-800 hover:border-red-500/30 p-6 rounded-2xl text-left transition-all group cursor-pointer h-full flex flex-col justify-between select-none">
-                  <div>
-                    <div className="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:scale-105 transition-transform mb-4">
-                      <Heart className="w-5 h-5 fill-amber-500" />
-                    </div>
-                    <h3 className="font-display font-bold text-base text-white">I'm looking for blood</h3>
-                    <p className="text-[11px] text-slate-400 leading-relaxed mt-2 font-medium">
-                      Someone needs help. Now. Find nearby voluntary donors and hospital blood banks instantly.
-                    </p>
-                  </div>
-                  <span className="mt-6 inline-flex items-center gap-1.5 px-3 py-1 bg-red-650 text-[10.5px] font-black rounded-lg text-white font-mono tracking-wide group-hover:bg-red-600 shadow-md shadow-red-500/10">
-                    I Need Blood ➔
-                  </span>
-                </button>
-
-              </div>
-
-              <div className="pt-6 border-t border-slate-850 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-                <button
-                  onClick={() => {
-                    setAuthMode('register');
-                    setActiveLoginType('blood_bank');
-                  }}
-                  className="text-slate-400 hover:text-white flex items-center gap-1 bg-transparent border-none cursor-pointer">
-                  🏦 I manage a blood bank (Register bank)
-                </button>
-                <div className="text-slate-500">
-                  Already have an account?{' '}
-                  <button 
-                    onClick={() => setAuthMode('login')} 
-                    className="text-red-500 font-bold hover:underline bg-transparent border-none cursor-pointer">
-                    Login here
-                  </button>
                 </div>
-              </div>
 
-            </div>
-          )}
-
-          {/* LOG IN MODULES */}
-          {authMode === 'login' && (
-            <div className="max-w-md mx-auto bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-3xl p-8 shadow-2xl animate-in zoom-in-95 duration-200">
-              
-              <div className="text-center space-y-2 mb-6">
-                <h2 className="font-display font-black text-2xl text-white">Log In to OneBlood</h2>
-                <p className="text-xs text-slate-400">Select portal access pathway below.</p>
-              </div>
-
-              {/* Login Path Toggles */}
-              <div className="grid grid-cols-4 gap-1.5 mb-6 bg-slate-950 p-1.5 rounded-xl text-center select-none font-mono">
-                {[
-                  { id: 'patient', label: 'Seeker' },
-                  { id: 'donor', label: 'Donor' },
-                  { id: 'blood_bank', label: 'Hospital' },
-                  { id: 'admin', label: 'Admin' }
-                ].map(type => (
-                  <button
-                    key={type.id}
-                    onClick={() => {
-                      setActiveLoginType(type.id);
-                      setDonorLoginError("");
-                    }}
-                    className={`py-2 px-1 rounded-lg text-[9px] font-black uppercase tracking-wider transition-colors cursor-pointer border-none ${
-                      activeLoginType === type.id ? 'bg-red-500 text-white shadow-sm' : 'bg-transparent text-slate-400 hover:text-white'
-                    }`}>
-                    {type.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* A. SEEKER QUICK LOGIN NO CREDENTIALS */}
-              {activeLoginType === 'patient' && (
-                <div className="space-y-4 text-center">
-                  <div className="p-4 rounded-xl border border-red-500/10 bg-red-500/[0.02] text-left">
-                    <h3 className="text-xs font-extrabold text-white flex items-center gap-1">
-                      <Search className="w-4 h-4 text-red-500 animate-pulse" />
-                      Emergency Search Deck
-                    </h3>
-                    <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
-                      Instant client-side coordinate proximity radial query. Locate O-, A+, AB- compatible donors and stock supplies immediately without logging in.
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setUserRole('patient');
-                      setIsLoggedIn(true);
-                      setOneBloodId('OB-' + Math.floor(100000 + Math.random() * 900000));
-                      triggerToast("Seeker emergency console active!", "success");
-                    }}
-                    className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-red-500/10 cursor-pointer border-none uppercase tracking-wider font-mono flex items-center justify-center gap-1.5">
-                    Launch SOS Search Radar
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
+                <div className="space-y-2">
+                  <h1 className="font-display font-black text-3xl md:text-4xl text-white tracking-tight">Join OneBlood</h1>
+                  <p className="text-xs text-slate-400 font-medium">Let's start with a simple question to get you to the right place.</p>
                 </div>
-              )}
 
-              {/* B. DONOR ACCOUNT LOGIN */}
-              {activeLoginType === 'donor' && (
-                <form onSubmit={handleDonorLogin} className="space-y-4">
-                  <div className="space-y-1.5">
-                    <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Email Address</label>
-                    <input
-                      type="email" required
-                      value={donorLoginForm.email}
-                      onChange={(e) => setDonorLoginForm({ ...donorLoginForm, email: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors"
-                      placeholder="e.g. amit@example.com"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Password</label>
-                    <input
-                      type="password" required
-                      value={donorLoginForm.password}
-                      onChange={(e) => setDonorLoginForm({ ...donorLoginForm, password: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors"
-                      placeholder="Enter donor password"
-                    />
-                  </div>
+                <span className="block text-[10px] font-black uppercase tracking-widest text-slate-500 font-mono">— ARE YOU A DONOR, OR ARE YOU LOOKING FOR ONE? —</span>
 
-                  {donorLoginError && (
-                    <div className="p-2.5 bg-red-950/40 border border-red-900 text-red-400 text-[10.5px] rounded-lg">
-                      ⚠️ {donorLoginError}
-                    </div>
-                  )}
-
-                  <div className="flex gap-2 pt-2 text-xs font-mono">
-                    <button
-                      type="button"
-                      onClick={triggerDonorAutofill}
-                      className="flex-1 py-3 border border-slate-800 hover:border-slate-700 hover:bg-slate-950 rounded-xl text-slate-400 cursor-pointer bg-transparent">
-                      Autofill Demo
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={donorLoading}
-                      className="flex-1 py-3 bg-red-650 hover:bg-red-600 text-white font-extrabold rounded-xl shadow-lg shadow-red-500/10 cursor-pointer border-none uppercase tracking-wider">
-                      {donorLoading ? "Verifying..." : "Sign In"}
-                    </button>
-                  </div>
-                </form>
-              )}
-
-              {/* C. HOSPITAL REPOSITORY LOG IN */}
-              {activeLoginType === 'blood_bank' && (
-                <div className="space-y-4">
-                  <div className="p-3 bg-blue-500/5 border border-blue-500/15 text-blue-400 text-[10.5px] rounded-lg">
-                    🏦 Institutional repository admin dashboard is synchronized under general Admin logs. Connect via Admin Pathway.
-                  </div>
-                  <button
-                    onClick={() => setActiveLoginType('admin')}
-                    className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl cursor-pointer border-none font-mono">
-                    Switch to Admin login
-                  </button>
-                </div>
-              )}
-
-              {/* D. PLATFORM ADMIN AUTH */}
-              {activeLoginType === 'admin' && (
-                <form onSubmit={handleAdminLogin} className="space-y-4">
-                  <div className="space-y-1.5">
-                    <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Admin Email</label>
-                    <input
-                      type="email" required
-                      value={adminLoginForm.email}
-                      onChange={(e) => setAdminLoginForm({ ...adminLoginForm, email: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors"
-                      placeholder="e.g. admin@oneblood.org"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Password</label>
-                    <input
-                      type="password" required
-                      value={adminLoginForm.password}
-                      onChange={(e) => setAdminLoginForm({ ...adminLoginForm, password: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors"
-                      placeholder="Enter admin password"
-                    />
-                  </div>
-
-                  {adminLoginError && (
-                    <div className="p-2.5 bg-red-950/40 border border-red-900 text-red-400 text-[10.5px] rounded-lg">
-                      ⚠️ {adminLoginError}
-                    </div>
-                  )}
-
-                  <div className="flex gap-2 pt-2 text-xs font-mono">
-                    <button
-                      type="button"
-                      onClick={triggerAdminAutofill}
-                      className="flex-1 py-3 border border-slate-800 hover:border-slate-700 hover:bg-slate-950 rounded-xl text-slate-400 cursor-pointer bg-transparent">
-                      Autofill Demo
-                    </button>
-                    <button
-                      type="submit"
-                      className="flex-1 py-3 bg-red-650 hover:bg-red-600 text-white font-extrabold rounded-xl shadow-lg shadow-red-500/10 cursor-pointer border-none uppercase tracking-wider">
-                      Authorize Admin
-                    </button>
-                  </div>
-                </form>
-              )}
-
-              <div className="mt-6 pt-4 border-t border-slate-850 flex items-center justify-between text-xs">
-                <button
-                  onClick={() => setAuthMode('select')}
-                  className="text-slate-500 hover:text-slate-300 font-bold bg-transparent border-none cursor-pointer font-mono">
-                  ◀ Choose Role
-                </button>
-                <div className="text-slate-400">
-                  New to OneBlood?{' '}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+                  
+                  {/* Option A: I want to donate */}
                   <button
                     onClick={() => {
                       setAuthMode('register');
-                      setSignUpForm({ name: '', email: '', phone: '', city: 'Bengaluru', password: '' });
+                      setActiveLoginType('donor');
                     }}
-                    className="text-red-500 font-bold hover:underline bg-transparent border-none cursor-pointer">
-                    Enroll now
+                    className="bg-slate-950/40 hover:bg-slate-900/80 border border-slate-800 hover:border-red-500/30 p-6 rounded-2xl text-left transition-all group cursor-pointer h-full flex flex-col justify-between select-none border-none">
+                    <div>
+                      <div className="w-9 h-9 rounded-lg bg-red-500/10 flex items-center justify-center text-red-500 group-hover:scale-105 transition-transform mb-4">
+                        <Heart className="w-5 h-5 fill-red-500" />
+                      </div>
+                      <h3 className="font-display font-bold text-base text-white">I want to donate</h3>
+                      <p className="text-[11px] text-slate-400 leading-relaxed mt-2 font-medium">
+                        Help someone in need. Register as a voluntary donor and save lives when it counts.
+                      </p>
+                    </div>
+                    <span className="mt-6 inline-flex items-center gap-1.5 px-3 py-1 bg-slate-800 text-[10.5px] font-black rounded-lg text-slate-300 font-mono tracking-wide group-hover:text-red-400 group-hover:bg-red-500/10">
+                      I'm a Donor ➔
+                    </span>
                   </button>
-                </div>
-              </div>
 
-            </div>
-          )}
-
-          {/* SIGN UP REGISTRATION PATH */}
-          {authMode === 'register' && (
-            <div className="max-w-xl mx-auto bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl animate-in zoom-in-95 duration-200">
-              
-              <div className="text-center space-y-2 mb-6">
-                <h2 className="font-display font-black text-2xl text-white">Create Seeker Account</h2>
-                <p className="text-xs text-slate-400">Locate compatible donors and hospital repositories instantly.</p>
-              </div>
-
-              {activeLoginType === 'donor' ? (
-                // Redirect Donor registration to wizard component
-                <div className="space-y-4">
-                  <div className="p-4 bg-red-500/5 border border-red-500/15 text-red-400 text-xs rounded-xl">
-                    🩸 Voluntary Donor profile onboarding operates under clinical-grade wizard parameters. Access enrollment below.
-                  </div>
+                  {/* Option B: I'm looking for blood */}
                   <button
                     onClick={() => {
-                      setUserRole('patient');
-                      setIsLoggedIn(true);
-                      triggerToast("Seeker console active. Switch role to donor profile.", "success");
+                      setAuthMode('register');
+                      setActiveLoginType('patient');
                     }}
-                    className="w-full py-3 bg-red-650 hover:bg-red-600 text-white font-extrabold text-xs rounded-xl shadow-lg cursor-pointer border-none uppercase tracking-wider font-mono">
-                    Activate account & Complete Donor Wizard
+                    className="bg-slate-950/40 hover:bg-slate-900/80 border border-slate-800 hover:border-red-500/30 p-6 rounded-2xl text-left transition-all group cursor-pointer h-full flex flex-col justify-between select-none border-none">
+                    <div>
+                      <div className="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:scale-105 transition-transform mb-4">
+                        <Heart className="w-5 h-5 fill-amber-500" />
+                      </div>
+                      <h3 className="font-display font-bold text-base text-white">I'm looking for blood</h3>
+                      <p className="text-[11px] text-slate-400 leading-relaxed mt-2 font-medium">
+                        Someone needs help. Now. Find nearby voluntary donors and hospital blood banks instantly.
+                      </p>
+                    </div>
+                    <span className="mt-6 inline-flex items-center gap-1.5 px-3 py-1 bg-red-650 text-[10.5px] font-black rounded-lg text-white font-mono tracking-wide group-hover:bg-red-600 shadow-md shadow-red-500/10">
+                      I Need Blood ➔
+                    </span>
                   </button>
+
                 </div>
-              ) : (
-                <form onSubmit={handlePatientRegister} className="space-y-4">
-                  
-                  {/* Persona Onboarding Switches */}
-                  <div className="grid grid-cols-2 gap-4 mb-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setAuthMode('register');
-                        setActiveLoginType('donor');
-                      }}
-                      className="bg-slate-950 hover:bg-slate-850 border border-slate-800 hover:border-slate-700 p-4 rounded-xl text-left cursor-pointer group">
-                      <span className="block text-[8.5px] font-black uppercase text-slate-500 font-mono tracking-widest">Option 1</span>
-                      <h4 className="text-xs font-bold text-white mt-1 group-hover:text-red-400">I want to donate (Donor)</h4>
-                    </button>
-                    <button
-                      type="button"
-                      className="bg-red-500/10 border border-red-500/30 p-4 rounded-xl text-left cursor-pointer">
-                      <span className="block text-[8.5px] font-black uppercase text-red-400 font-mono tracking-widest animate-pulse">Option 2 (Selected)</span>
-                      <h4 className="text-xs font-bold text-red-400 mt-1">I'm looking for blood</h4>
+
+                <div className="pt-6 border-t border-slate-850 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+                  <button
+                    onClick={() => {
+                      setAuthMode('register');
+                      setActiveLoginType('blood_bank');
+                    }}
+                    className="text-slate-400 hover:text-white flex items-center gap-1 bg-transparent border-none cursor-pointer">
+                    🏦 I manage a blood bank (Register bank)
+                  </button>
+                  <div className="text-slate-500">
+                    Already have an account?{' '}
+                    <button 
+                      onClick={() => setAuthMode('login')} 
+                      className="text-red-500 font-bold hover:underline bg-transparent border-none cursor-pointer">
+                      Login here
                     </button>
                   </div>
+                </div>
 
-                  <hr className="border-slate-850" />
+              </div>
+            )}
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Full Name</label>
-                      <input
-                        type="text" required
-                        value={signUpForm.name}
-                        onChange={(e) => setSignUpForm({ ...signUpForm, name: e.target.value })}
-                        className={`w-full bg-slate-950 border ${validationErrors.name ? 'border-red-500' : 'border-slate-800'} rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors`}
-                        placeholder="Enter full name"
-                      />
+            {/* LOG IN MODULES */}
+            {authMode === 'login' && (
+              <div className="max-w-md mx-auto bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-3xl p-8 shadow-2xl animate-in zoom-in-95 duration-200">
+                
+                <div className="text-center space-y-2 mb-6">
+                  <h2 className="font-display font-black text-2xl text-white">Log In to OneBlood</h2>
+                  <p className="text-xs text-slate-400">Select portal access pathway below.</p>
+                </div>
+
+                {/* Login Path Toggles */}
+                <div className="grid grid-cols-4 gap-1.5 mb-6 bg-slate-950 p-1.5 rounded-xl text-center select-none font-mono">
+                  {[
+                    { id: 'patient', label: 'Seeker' },
+                    { id: 'donor', label: 'Donor' },
+                    { id: 'blood_bank', label: 'Hospital' },
+                    { id: 'admin', label: 'Admin' }
+                  ].map(type => (
+                    <button
+                      key={type.id}
+                      onClick={() => {
+                        setActiveLoginType(type.id);
+                        setDonorLoginError("");
+                      }}
+                      className={`py-2 px-1 rounded-lg text-[9px] font-black uppercase tracking-wider transition-colors cursor-pointer border-none ${
+                        activeLoginType === type.id ? 'bg-red-500 text-white shadow-sm' : 'bg-transparent text-slate-400 hover:text-white'
+                      }`}>
+                      {type.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* A. SEEKER QUICK LOGIN */}
+                {activeLoginType === 'patient' && (
+                  <div className="space-y-4 text-center">
+                    <div className="p-4 rounded-xl border border-red-500/10 bg-red-500/[0.02] text-left">
+                      <h3 className="text-xs font-extrabold text-white flex items-center gap-1 font-sans">
+                        <Search className="w-4 h-4 text-red-500 animate-pulse" />
+                        Emergency Search Deck
+                      </h3>
+                      <p className="text-[11px] text-slate-400 mt-1 leading-relaxed font-sans">
+                        Instant client-side coordinate proximity radial query. Locate O-, A+, AB- compatible donors and stock supplies immediately without logging in.
+                      </p>
                     </div>
+                    <button
+                      onClick={() => {
+                        setUserRole('patient');
+                        setIsLoggedIn(true);
+                        setOneBloodId('OB-' + Math.floor(100000 + Math.random() * 900000));
+                        triggerToast("Seeker emergency console active!", "success");
+                      }}
+                      className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-red-500/10 cursor-pointer border-none uppercase tracking-wider font-mono flex items-center justify-center gap-1.5">
+                      Launch SOS Search Radar
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
+                {/* B. DONOR ACCOUNT LOGIN */}
+                {activeLoginType === 'donor' && (
+                  <form onSubmit={handleDonorLogin} className="space-y-4 font-sans">
                     <div className="space-y-1.5">
                       <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Email Address</label>
                       <input
                         type="email" required
-                        value={signUpForm.email}
-                        onChange={(e) => setSignUpForm({ ...signUpForm, email: e.target.value })}
-                        className={`w-full bg-slate-950 border ${validationErrors.email ? 'border-red-500' : 'border-slate-800'} rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors`}
-                        placeholder="name@example.com"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Phone Number</label>
-                      <input
-                        type="tel" required
-                        value={signUpForm.phone}
-                        onChange={(e) => setSignUpForm({ ...signUpForm, phone: e.target.value })}
-                        className={`w-full bg-slate-950 border ${validationErrors.phone ? 'border-red-500' : 'border-slate-800'} rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors font-mono`}
-                        placeholder="10-digit mobile number"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">City</label>
-                      <input
-                        type="text" required
-                        value={signUpForm.city}
-                        onChange={(e) => setSignUpForm({ ...signUpForm, city: e.target.value })}
+                        value={donorLoginForm.email}
+                        onChange={(e) => setDonorLoginForm({ ...donorLoginForm, email: e.target.value })}
                         className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors"
-                        placeholder="e.g. Hubballi"
+                        placeholder="e.g. amit@example.com"
                       />
                     </div>
+                    <div className="space-y-1.5">
+                      <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Password</label>
+                      <input
+                        type="password" required
+                        value={donorLoginForm.password}
+                        onChange={(e) => setDonorLoginForm({ ...donorLoginForm, password: e.target.value })}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors"
+                        placeholder="Enter donor password"
+                      />
+                    </div>
+
+                    {donorLoginError && (
+                      <div className="p-2.5 bg-red-950/40 border border-red-900 text-red-400 text-[10.5px] rounded-lg">
+                        ⚠️ {donorLoginError}
+                      </div>
+                    )}
+
+                    <div className="flex gap-2 pt-2 text-xs font-mono">
+                      <button
+                        type="button"
+                        onClick={triggerDonorAutofill}
+                        className="flex-1 py-3 border border-slate-800 hover:border-slate-700 hover:bg-slate-950 rounded-xl text-slate-400 cursor-pointer bg-transparent">
+                        Autofill Demo
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={donorLoading}
+                        className="flex-1 py-3 bg-red-650 hover:bg-red-600 text-white font-extrabold rounded-xl shadow-lg shadow-red-500/10 cursor-pointer border-none uppercase tracking-wider">
+                        {donorLoading ? "Verifying..." : "Sign In"}
+                      </button>
+                    </div>
+                  </form>
+                )}
+
+                {/* C. HOSPITAL REPOSITORY LOG IN */}
+                {activeLoginType === 'blood_bank' && (
+                  <div className="space-y-4">
+                    <div className="p-3 bg-blue-500/5 border border-blue-500/15 text-blue-400 text-[10.5px] rounded-lg">
+                      🏦 Institutional repository admin dashboard is synchronized under general Admin logs. Connect via Admin Pathway.
+                    </div>
+                    <button
+                      onClick={() => setActiveLoginType('admin')}
+                      className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl cursor-pointer border-none font-mono">
+                      Switch to Admin login
+                    </button>
                   </div>
+                )}
 
-                  <div className="space-y-1.5">
-                    <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Password</label>
-                    <input
-                      type="password" required
-                      value={signUpForm.password}
-                      onChange={(e) => setSignUpForm({ ...signUpForm, password: e.target.value })}
-                      className={`w-full bg-slate-950 border ${validationErrors.password ? 'border-red-500' : 'border-slate-800'} rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors`}
-                      placeholder="Min 6 characters"
-                    />
+                {/* D. PLATFORM ADMIN AUTH */}
+                {activeLoginType === 'admin' && (
+                  <form onSubmit={handleAdminLogin} className="space-y-4">
+                    <div className="space-y-1.5">
+                      <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Admin Email</label>
+                      <input
+                        type="email" required
+                        value={adminLoginForm.email}
+                        onChange={(e) => setAdminLoginForm({ ...adminLoginForm, email: e.target.value })}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors"
+                        placeholder="e.g. admin@oneblood.org"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Password</label>
+                      <input
+                        type="password" required
+                        value={adminLoginForm.password}
+                        onChange={(e) => setAdminLoginForm({ ...adminLoginForm, password: e.target.value })}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors"
+                        placeholder="Enter admin password"
+                      />
+                    </div>
+
+                    {adminLoginError && (
+                      <div className="p-2.5 bg-red-950/40 border border-red-900 text-red-400 text-[10.5px] rounded-lg">
+                        ⚠️ {adminLoginError}
+                      </div>
+                    )}
+
+                    <div className="flex gap-2 pt-2 text-xs font-mono">
+                      <button
+                        type="button"
+                        onClick={triggerAdminAutofill}
+                        className="flex-1 py-3 border border-slate-800 hover:border-slate-700 hover:bg-slate-950 rounded-xl text-slate-400 cursor-pointer bg-transparent">
+                        Autofill Demo
+                      </button>
+                      <button
+                        type="submit"
+                        className="flex-1 py-3 bg-red-650 hover:bg-red-600 text-white font-extrabold rounded-xl shadow-lg shadow-red-500/10 cursor-pointer border-none uppercase tracking-wider">
+                        Authorize Admin
+                      </button>
+                    </div>
+                  </form>
+                )}
+
+                <div className="mt-6 pt-4 border-t border-slate-850 flex items-center justify-between text-xs">
+                  <button
+                    onClick={() => setAuthMode('select')}
+                    className="text-slate-500 hover:text-slate-300 font-bold bg-transparent border-none cursor-pointer font-mono">
+                    ◀ Choose Role
+                  </button>
+                  <div className="text-slate-400">
+                    New to OneBlood?{' '}
+                    <button
+                      onClick={() => {
+                        setAuthMode('register');
+                        setSignUpForm({ name: '', email: '', phone: '', city: 'Bengaluru', password: '' });
+                      }}
+                      className="text-red-500 font-bold hover:underline bg-transparent border-none cursor-pointer">
+                      Enroll now
+                    </button>
                   </div>
-
-                  <button
-                    type="submit"
-                    className="w-full py-3.5 bg-red-650 hover:bg-red-600 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-red-500/10 cursor-pointer border-none uppercase tracking-wider font-mono flex items-center justify-center gap-1.5">
-                    Register Account
-                  </button>
-                </form>
-              )}
-
-              <div className="mt-6 pt-4 border-t border-slate-850 flex items-center justify-between text-xs font-mono">
-                <button
-                  onClick={() => setAuthMode('select')}
-                  className="text-slate-500 hover:text-slate-300 font-bold bg-transparent border-none cursor-pointer">
-                  ◀ Onboarding
-                </button>
-                <div className="text-slate-400">
-                  Already have an account?{' '}
-                  <button
-                    onClick={() => setAuthMode('login')}
-                    className="text-red-500 font-bold hover:underline bg-transparent border-none cursor-pointer font-sans">
-                    Login here
-                  </button>
                 </div>
+
+              </div>
+            )}
+
+            {/* SIGN UP REGISTRATION PATH */}
+            {authMode === 'register' && (
+              <div className="max-w-xl mx-auto bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl animate-in zoom-in-95 duration-200">
+                
+                <div className="text-center space-y-2 mb-6">
+                  <h2 className="font-display font-black text-2xl text-white">Create Seeker Account</h2>
+                  <p className="text-xs text-slate-400">Locate compatible donors and hospital repositories instantly.</p>
+                </div>
+
+                {activeLoginType === 'donor' ? (
+                  // Redirect Donor registration to wizard component
+                  <div className="space-y-4 font-sans">
+                    <div className="p-4 bg-red-500/5 border border-red-500/15 text-red-400 text-xs rounded-xl">
+                      🩸 Voluntary Donor profile onboarding operates under clinical-grade wizard parameters. Access enrollment below.
+                    </div>
+                    <button
+                      onClick={() => {
+                        setUserRole('patient');
+                        setIsLoggedIn(true);
+                        triggerToast("Seeker console active. Switch role to donor profile.", "success");
+                      }}
+                      className="w-full py-3 bg-red-650 hover:bg-red-600 text-white font-extrabold text-xs rounded-xl shadow-lg cursor-pointer border-none uppercase tracking-wider font-mono">
+                      Activate account & Complete Donor Wizard
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handlePatientRegister} className="space-y-4">
+                    
+                    {/* Persona Onboarding Switches */}
+                    <div className="grid grid-cols-2 gap-4 mb-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAuthMode('register');
+                          setActiveLoginType('donor');
+                        }}
+                        className="bg-slate-950 hover:bg-slate-850 border border-slate-800 hover:border-slate-700 p-4 rounded-xl text-left cursor-pointer group border-none">
+                        <span className="block text-[8.5px] font-black uppercase text-slate-500 font-mono tracking-widest">Option 1</span>
+                        <h4 className="text-xs font-bold text-white mt-1 group-hover:text-red-400">I want to donate (Donor)</h4>
+                      </button>
+                      <button
+                        type="button"
+                        className="bg-red-500/10 border border-red-500/30 p-4 rounded-xl text-left cursor-pointer border-none">
+                        <span className="block text-[8.5px] font-black uppercase text-red-400 font-mono tracking-widest animate-pulse">Option 2 (Selected)</span>
+                        <h4 className="text-xs font-bold text-red-400 mt-1">I'm looking for blood</h4>
+                      </button>
+                    </div>
+
+                    <hr className="border-slate-850" />
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Full Name</label>
+                        <input
+                          type="text" required
+                          value={signUpForm.name}
+                          onChange={(e) => setSignUpForm({ ...signUpForm, name: e.target.value })}
+                          className={`w-full bg-slate-950 border ${validationErrors.name ? 'border-red-500' : 'border-slate-800'} rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors`}
+                          placeholder="Enter full name"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Email Address</label>
+                        <input
+                          type="email" required
+                          value={signUpForm.email}
+                          onChange={(e) => setSignUpForm({ ...signUpForm, email: e.target.value })}
+                          className={`w-full bg-slate-950 border ${validationErrors.email ? 'border-red-500' : 'border-slate-800'} rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors`}
+                          placeholder="name@example.com"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Phone Number</label>
+                        <input
+                          type="tel" required
+                          value={signUpForm.phone}
+                          onChange={(e) => setSignUpForm({ ...signUpForm, phone: e.target.value })}
+                          className={`w-full bg-slate-950 border ${validationErrors.phone ? 'border-red-500' : 'border-slate-800'} rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors font-mono`}
+                          placeholder="10-digit mobile number"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">City</label>
+                        <input
+                          type="text" required
+                          value={signUpForm.city}
+                          onChange={(e) => setSignUpForm({ ...signUpForm, city: e.target.value })}
+                          className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors"
+                          placeholder="e.g. Hubballi"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Password</label>
+                      <input
+                        type="password" required
+                        value={signUpForm.password}
+                        onChange={(e) => setSignUpForm({ ...signUpForm, password: e.target.value })}
+                        className={`w-full bg-slate-950 border ${validationErrors.password ? 'border-red-500' : 'border-slate-800'} rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors`}
+                        placeholder="Min 6 characters"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full py-3.5 bg-red-650 hover:bg-red-600 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-red-500/10 cursor-pointer border-none uppercase tracking-wider font-mono flex items-center justify-center gap-1.5">
+                      Register Account
+                    </button>
+                  </form>
+                )}
+
+                <div className="mt-6 pt-4 border-t border-slate-850 flex items-center justify-between text-xs font-mono">
+                  <button
+                    onClick={() => setAuthMode('select')}
+                    className="text-slate-500 hover:text-slate-300 font-bold bg-transparent border-none cursor-pointer">
+                    ◀ Onboarding
+                  </button>
+                  <div className="text-slate-400">
+                    Already have an account?{' '}
+                    <button
+                      onClick={() => setAuthMode('login')}
+                      className="text-red-500 font-bold hover:underline bg-transparent border-none cursor-pointer font-sans">
+                      Login here
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            )}
+          </div>
+
+          {/* ==================================================================== */}
+          {/* ✨ GORGEOUS LANDING PAGE SECTION 2: ONEBLOOD'S IMPACT (HALL OF FAME) */}
+          {/* ==================================================================== */}
+          <section className="bg-slate-950/40 py-16 border-t border-b border-slate-900">
+            <div className="max-w-6xl mx-auto px-4 text-center space-y-12">
+              
+              <div className="space-y-4 max-w-xl mx-auto">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 border border-amber-500/25 rounded-full text-[10px] font-black tracking-widest text-amber-500 uppercase font-mono">
+                  🏆 HALL OF FAME
+                </span>
+                <h2 className="font-display font-black text-3xl md:text-4xl text-white tracking-tight leading-tight">
+                  OneBlood's Impact — Since Day One
+                </h2>
+                <p className="text-slate-400 text-xs md:text-sm leading-relaxed font-sans font-medium">
+                  Every number here is a life touched. Every drop donated through OneBlood has made this possible.
+                </p>
+              </div>
+
+              {/* 4 Cards Grid Layout with premium dark glassmorphic styling */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 select-none font-mono">
+                
+                {/* 1. Successful Donations */}
+                <div className="bg-[#111625]/60 backdrop-blur-md border border-slate-850 p-6 rounded-2xl shadow-lg transition-transform hover:-translate-y-1 duration-300">
+                  <div className="flex justify-center mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500">
+                      <Heart className="w-5 h-5 text-red-500 fill-red-500" />
+                    </div>
+                  </div>
+                  <b className="text-4xl font-black text-red-500 block mb-1">850</b>
+                  <span className="text-[9.5px] font-bold text-slate-500 tracking-wider uppercase block">SUCCESSFUL DONATIONS</span>
+                </div>
+
+                {/* 2. Transfusions Completed */}
+                <div className="bg-[#111625]/60 backdrop-blur-md border border-slate-850 p-6 rounded-2xl shadow-lg transition-transform hover:-translate-y-1 duration-300">
+                  <div className="flex justify-center mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+                      <Syringe className="w-5 h-5" />
+                    </div>
+                  </div>
+                  <b className="text-4xl font-black text-blue-500 block mb-1">740</b>
+                  <span className="text-[9.5px] font-bold text-slate-500 tracking-wider uppercase block">TRANSFUSIONS COMPLETED</span>
+                </div>
+
+                {/* 3. Lives Impacted */}
+                <div className="bg-[#111625]/60 backdrop-blur-md border border-slate-850 p-6 rounded-2xl shadow-lg transition-transform hover:-translate-y-1 duration-300">
+                  <div className="flex justify-center mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500">
+                      <Heart className="w-5 h-5 text-red-400 fill-red-450 animate-pulse" />
+                    </div>
+                  </div>
+                  <b className="text-4xl font-black text-red-500 block mb-1">2,550</b>
+                  <span className="text-[9.5px] font-bold text-slate-500 tracking-wider uppercase block">LIVES IMPACTED</span>
+                </div>
+
+                {/* 4. Cities Reached */}
+                <div className="bg-[#111625]/60 backdrop-blur-md border border-slate-850 p-6 rounded-2xl shadow-lg transition-transform hover:-translate-y-1 duration-300">
+                  <div className="flex justify-center mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+                      <Building2 className="w-5 h-5" />
+                    </div>
+                  </div>
+                  <b className="text-4xl font-black text-blue-500 block mb-1">7</b>
+                  <span className="text-[9.5px] font-bold text-slate-500 tracking-wider uppercase block">CITIES REACHED</span>
+                </div>
+
               </div>
 
             </div>
-          )}
+          </section>
 
         </div>
       ) : (
@@ -1318,7 +1399,7 @@ export default function App() {
                         </p>
                       </div>
 
-                      <div className="border-2 border-dashed border-slate-800 hover:border-red-500/30 rounded-xl p-6 text-center cursor-pointer transition-colors relative bg-slate-950/40">
+                      <div className="border-2 border-dashed border-slate-850 hover:border-red-500/30 rounded-xl p-6 text-center cursor-pointer transition-colors relative bg-slate-950/40">
                         <input
                           type="file"
                           id="ocr-prescription-upload"
@@ -1337,7 +1418,7 @@ export default function App() {
                           <div className="text-xs font-bold text-slate-300">
                             {uploadedFile ? `Selected: ${uploadedFile.name}` : "Drop prescription letter here"}
                           </div>
-                          <p className="text-[9px] text-slate-500 font-mono">PDF, JPG, PNG - Mobile Camera supported 📷</p>
+                          <p className="text-[9px] text-slate-550 font-mono">PDF, JPG, PNG - Mobile Camera supported 📷</p>
                         </label>
                       </div>
 
@@ -1350,7 +1431,7 @@ export default function App() {
 
                       {ocrSuccess && ocrParsedData && (
                         <div className="p-4 bg-emerald-500/5 border border-emerald-500/15 rounded-xl space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
-                          <span className="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider text-emerald-500 font-mono">
+                          <span className="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider text-emerald-455 font-mono">
                             <ShieldCheck className="w-3.5 h-3.5" />
                             Requisition Verified (Confidence: {ocrParsedData.confidence}%)
                           </span>
@@ -1395,7 +1476,7 @@ export default function App() {
                         <span className="block text-[9px] font-bold text-slate-500 uppercase">🧬 Compatible blood fallbacks</span>
                         <div className="flex flex-wrap gap-1">
                           {GET_COMPATIBLE_TYPES(searchBloodGroup).map(gp => (
-                            <span key={gp} className={`px-1.5 py-0.2 rounded text-[10px] font-bold ${gp === searchBloodGroup ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-slate-900 text-slate-500'}`}>
+                            <span key={gp} className={`px-1.5 py-0.2 rounded text-[10px] font-bold ${gp === searchBloodGroup ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-slate-900 text-slate-505'}`}>
                               {gp}
                             </span>
                           ))}
@@ -1457,7 +1538,7 @@ export default function App() {
                         <p className="text-slate-400 text-[10px]">Broadcasting proximity match logs inside compatible {dispatchAlert.bloodGroup} range...</p>
                       </div>
                     </div>
-                    <span className="text-[10px] bg-red-500/15 border border-red-500/25 px-2 py-0.5 rounded text-red-400 font-bold">{dispatchAlert.matchingDonorsCount} active pool</span>
+                    <span className="text-[10px] bg-red-500/15 border border-red-500/25 px-2 py-0.5 rounded text-red-405 font-bold">{dispatchAlert.matchingDonorsCount} active pool</span>
                   </div>
                 )}
 
@@ -1465,7 +1546,7 @@ export default function App() {
                   
                   {/* Left Column: Results Lists */}
                   <div className={`md:col-span-7 space-y-6 ${openChatRoom ? 'hidden md:block' : ''}`}>
-                    {/* Local coordinate visual map */}
+                    {/* Dynamic CDN loaded Leaflet GPS map */}
                     <InteractiveMap 
                       userLat={userLocation.latitude} 
                       userLng={userLocation.longitude} 
@@ -1484,8 +1565,8 @@ export default function App() {
                             onClick={() => setSearchType(type)}
                             className={`px-3 py-1 text-[10.5px] font-black rounded-full capitalize cursor-pointer transition-all border-none ${
                               searchType === type 
-                                ? 'bg-red-500/10 text-red-400 font-extrabold' 
-                                : 'bg-slate-950 text-slate-500 hover:text-slate-300'
+                                ? 'bg-red-500/10 text-red-405 font-extrabold' 
+                                : 'bg-slate-950 text-slate-500 hover:text-slate-305'
                             }`}>
                             {type === 'all' ? 'All Matches' : type === 'banks' ? 'Banks' : 'Volunteers'}
                           </button>
@@ -1564,7 +1645,7 @@ export default function App() {
                                       Phone Encrypted
                                     </span>
                                   ) : (
-                                    <span className="text-emerald-400 font-bold flex items-center gap-0.5">
+                                    <span className="text-emerald-450 font-bold flex items-center gap-0.5">
                                       <Phone className="w-3 h-3 text-emerald-500 animate-pulse" />
                                       {donor.phone}
                                     </span>
@@ -1639,7 +1720,7 @@ export default function App() {
                           />
                           <button 
                             type="submit"
-                            className="w-8.5 h-8.5 rounded-lg bg-red-600 hover:bg-red-700 text-white flex items-center justify-center shadow cursor-pointer border-none">
+                            className="w-8.5 h-8.5 rounded-lg bg-red-650 hover:bg-red-600 text-white flex items-center justify-center shadow cursor-pointer border-none">
                             <Send className="w-4 h-4" />
                           </button>
                         </form>
@@ -1674,7 +1755,7 @@ export default function App() {
                     </button>
 
                     <span className={`inline-flex items-center px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider mb-2.5 ${
-                      selectedResultCard.type === 'bloodbank' ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                      selectedResultCard.type === 'bloodbank' ? 'bg-red-500/10 text-red-405 border border-red-500/20' : 'bg-emerald-500/10 text-emerald-450 border border-emerald-500/20'
                     }`}>
                     {selectedResultCard.type === 'bloodbank' ? 'Blood Bank' : 'Emergency Voluntary Donor'}
                     </span>
@@ -1698,7 +1779,7 @@ export default function App() {
                           </div>
                           <div>
                             <span className="block text-[9px] text-slate-400 font-bold uppercase">Blood Category</span>
-                            <b className="text-red-400">{selectedResultCard.bloodGroup}</b>
+                            <b className="text-red-405">{selectedResultCard.bloodGroup}</b>
                           </div>
                           <div>
                             <span className="block text-[9px] text-slate-400 font-bold uppercase">Last Donated Date</span>
@@ -1744,8 +1825,8 @@ export default function App() {
                         <span className="block text-[9px] text-slate-500 font-bold uppercase tracking-wider mb-3">Available stocks (Bags)</span>
                         <div className="grid grid-cols-4 gap-2 text-center">
                           {Object.entries(selectedResultCard.inventory || {}).map(([gp, bags]) => (
-                            <div key={gp} className={`p-2 rounded-lg border ${gp === searchBloodGroup ? 'bg-red-500/10 border-red-500/30 text-red-400' : 'bg-slate-900 border-slate-850'}`}>
-                              <span className="block text-[10px] text-slate-500">{gp}</span>
+                            <div key={gp} className={`p-2 rounded-lg border ${gp === searchBloodGroup ? 'bg-red-500/10 border-red-500/30 text-red-400' : 'bg-slate-900 border-slate-855'}`}>
+                              <span className="block text-[10px] text-slate-505">{gp}</span>
                               <b className={`text-xs ${bags < 5 ? 'text-amber-450 font-black' : 'text-slate-200'}`}>{bags} bags</b>
                             </div>
                           ))}
@@ -1778,7 +1859,7 @@ export default function App() {
                                 { id: 1, text: `Secure Room opened with ${selectedResultCard.name}. Coordinates decrypted!`, isSystem: true }
                               ]);
                             }}
-                            className="w-full py-2.5 px-4 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-600 text-white font-extrabold rounded-xl transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer shadow-md shadow-red-500/10 border-none uppercase font-mono">
+                            className="w-full py-2.5 px-4 bg-gradient-to-r from-red-650 to-red-500 hover:from-red-500 hover:to-red-600 text-white font-extrabold rounded-xl transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer shadow-md shadow-red-500/10 border-none uppercase font-mono">
                             <Lock className="w-4 h-4" />
                             Unlock Profile
                           </button>
@@ -1793,11 +1874,11 @@ export default function App() {
                       </div>
 
                       <div>
-                        <span className="block text-[9px] text-slate-500 font-bold uppercase mb-1.5">Navigation Router</span>
+                        <span className="block text-[9px] text-slate-550 font-bold uppercase mb-1.5">Navigation Router</span>
                         <a 
                           href={`https://www.google.com/maps/dir/?api=1&destination=${selectedResultCard.latitude},${selectedResultCard.longitude}`}
                           target="_blank" rel="noreferrer"
-                          className="w-full py-2.5 px-4 bg-slate-900 border border-slate-800 text-slate-300 font-bold rounded-xl transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer hover:border-slate-700 text-decoration-none font-mono">
+                          className="w-full py-2.5 px-4 bg-slate-900 border border-slate-805 text-slate-300 font-bold rounded-xl transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer hover:border-slate-700 text-decoration-none font-mono">
                           <Navigation className="w-4 h-4 text-red-500" />
                           Route ({selectedResultCard.distance} km)
                         </a>
@@ -1828,7 +1909,7 @@ export default function App() {
               {/* Status toggler card */}
               <div className="bg-slate-900/60 backdrop-blur-md border border-slate-800 p-6 rounded-2xl shadow-sm space-y-6 transition-colors">
                 
-                <div className="p-4 rounded-xl border border-slate-850 bg-slate-950 flex items-center justify-between">
+                <div className="p-4 rounded-xl border border-slate-855 bg-slate-955 flex items-center justify-between">
                   <div>
                     <span className={`text-xs font-black tracking-wider uppercase flex items-center gap-1.5 ${
                       loggedInDonor.isAvailable ? 'text-emerald-500 font-extrabold' : 'text-slate-500'
@@ -1857,35 +1938,35 @@ export default function App() {
                 {/* Info summary */}
                 <div className="grid grid-cols-2 gap-4 text-xs font-medium">
                   
-                  <div className="p-3 bg-slate-950 rounded-xl border border-slate-850">
+                  <div className="p-3 bg-slate-955 rounded-xl border border-slate-850">
                     <span className="text-[10px] text-slate-500 uppercase font-bold">Donor Name</span>
                     <p className="text-white font-extrabold mt-1 font-sans">{loggedInDonor.name}</p>
                   </div>
                   
-                  <div className="p-3 bg-slate-950 rounded-xl border border-slate-850">
+                  <div className="p-3 bg-slate-955 rounded-xl border border-slate-850">
                     <span className="text-[10px] text-slate-500 uppercase font-bold">Blood Category</span>
-                    <p className="text-red-400 font-black mt-1 flex items-center gap-1 font-sans">
+                    <p className="text-red-405 font-black mt-1 flex items-center gap-1 font-sans">
                       <Heart className="w-3.5 h-3.5 fill-red-500 animate-pulse" />
                       {loggedInDonor.bloodGroup}
                     </p>
                   </div>
 
-                  <div className="p-3 bg-slate-950 rounded-xl border border-slate-850">
+                  <div className="p-3 bg-slate-955 rounded-xl border border-slate-850">
                     <span className="text-[10px] text-slate-500 uppercase font-bold">Phone Number</span>
                     <p className="text-white font-extrabold mt-1 font-sans">{loggedInDonor.phone}</p>
                   </div>
 
-                  <div className="p-3 bg-slate-950 rounded-xl border border-slate-850">
+                  <div className="p-3 bg-slate-955 rounded-xl border border-slate-850">
                     <span className="text-[10px] text-slate-500 uppercase font-bold">Age</span>
                     <p className="text-white font-extrabold mt-1 font-sans">{loggedInDonor.age || 25} Years</p>
                   </div>
 
-                  <div className="p-3 bg-slate-950 rounded-xl border border-slate-850">
+                  <div className="p-3 bg-slate-955 rounded-xl border border-slate-850">
                     <span className="text-[10px] text-slate-500 uppercase font-bold">Location</span>
                     <p className="text-white font-extrabold mt-1 font-sans">{loggedInDonor.city || 'Bangalore'}, {loggedInDonor.state || 'Karnataka'}</p>
                   </div>
 
-                  <div className="p-3 bg-slate-950 rounded-xl border border-slate-850">
+                  <div className="p-3 bg-slate-955 rounded-xl border border-slate-850">
                     <span className="text-[10px] text-slate-500 uppercase font-bold">Health Checks</span>
                     <p className="text-emerald-450 font-extrabold mt-1 font-sans">✓ Screened</p>
                   </div>
@@ -1902,7 +1983,7 @@ export default function App() {
                       setIsLoggedIn(false);
                       triggerToast("Launching stepped clinical wizard...", "info");
                     }}
-                    className="px-4 py-2 bg-slate-950 border border-slate-850 hover:border-slate-700 text-slate-400 hover:text-white rounded-lg text-xs font-bold transition-all cursor-pointer font-mono">
+                    className="px-4 py-2 bg-slate-955 border border-slate-850 hover:border-slate-700 text-slate-400 hover:text-white rounded-lg text-xs font-bold transition-all cursor-pointer font-mono">
                     Relaunch Donor Wizard
                   </button>
                 </div>
@@ -1982,7 +2063,7 @@ export default function App() {
                       </div>
                     </div>
 
-                    <button type="submit" className="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-lg transition-all uppercase border-none cursor-pointer">
+                    <button type="submit" className="w-full py-2.5 bg-red-650 hover:bg-red-700 text-white font-bold text-xs rounded-lg transition-all uppercase border-none cursor-pointer">
                       Confirm Repository Registration
                     </button>
                   </form>
@@ -1993,7 +2074,7 @@ export default function App() {
               <div className="bg-slate-900/60 border border-slate-800 rounded-2xl shadow-sm overflow-hidden transition-colors">
                 <table className="w-full text-left border-collapse font-sans">
                   <thead>
-                    <tr className="bg-slate-950 border-b border-slate-850 text-[10px] font-black uppercase text-slate-500 tracking-wider font-mono">
+                    <tr className="bg-slate-955 border-b border-slate-850 text-[10px] font-black uppercase text-slate-500 tracking-wider font-mono">
                       <th className="p-4">Facility Name</th>
                       <th className="p-4 hidden md:table-cell">Street Address</th>
                       <th className="p-4">Capacity Status</th>
@@ -2009,7 +2090,7 @@ export default function App() {
                         <tr key={bank.id} className="hover:bg-slate-900/40 transition-colors">
                           <td className="p-4 font-bold text-white">
                             {bank.name}
-                            <span className="block md:hidden text-[9px] text-slate-500 mt-0.5">{bank.address}</span>
+                            <span className="block md:hidden text-[9px] text-slate-505 mt-0.5">{bank.address}</span>
                           </td>
                           <td className="p-4 text-slate-400 hidden md:table-cell">{bank.address}</td>
                           <td className="p-4 font-mono font-bold">
@@ -2034,7 +2115,7 @@ export default function App() {
 
               {/* ✨ MODAL OVERLAY: STOCK ADJUSTER */}
               {adminSelectedBank && (
-                <div className="fixed inset-0 bg-slate-950/65 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+                <div className="fixed inset-0 bg-slate-955/65 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
                   <div className="bg-[#111625]/95 border border-slate-800 rounded-2xl shadow-2xl max-w-xl w-full p-6 relative overflow-hidden animate-in zoom-in-95 duration-200 font-mono">
                     
                     <button onClick={() => setAdminSelectedBank(null)} className="absolute top-4 right-4 text-slate-400 hover:text-white cursor-pointer border-none bg-transparent">
@@ -2053,7 +2134,7 @@ export default function App() {
                         return (
                           <div 
                             key={`adjust-${group}`}
-                            className={`p-2.5 border rounded-xl flex flex-col justify-between items-center text-center bg-slate-950 ${
+                            className={`p-2.5 border rounded-xl flex flex-col justify-between items-center text-center bg-slate-955 ${
                               isLow ? 'border-amber-500/40' : 'border-slate-800'
                             }`}>
                             <span className="text-xs font-black text-slate-500 font-mono">{group}</span>
@@ -2065,10 +2146,10 @@ export default function App() {
                             <div className="flex gap-1 w-full font-sans">
                               <button
                                 onClick={() => handleUpdateInventory(group, 'dec')}
-                                className="flex-1 py-0.5 text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 rounded cursor-pointer">-</button>
+                                className="flex-1 py-0.5 text-xs font-bold bg-slate-900 border border-slate-805 text-slate-300 rounded cursor-pointer">-</button>
                               <button
                                 onClick={() => handleUpdateInventory(group, 'inc')}
-                                className="flex-1 py-0.5 text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 rounded cursor-pointer">+</button>
+                                className="flex-1 py-0.5 text-xs font-bold bg-slate-900 border border-slate-805 text-slate-300 rounded cursor-pointer">+</button>
                             </div>
                             
                             {isLow && (
@@ -2112,7 +2193,7 @@ export default function App() {
                   { label: "Total Accounts", val: 194, color: "text-blue-500" },
                   { label: "Registered Donors", val: 153, color: "text-red-500" },
                   { label: "Linked Blood Banks", val: 37, color: "text-emerald-500" },
-                  { label: "Emergency Requests", val: dispatchAlert ? 1 : 0, color: "text-amber-500" },
+                  { label: "Emergency Requests", val: dispatchAlert ? 1 : 0, color: "text-amber-505" },
                   { label: "Chat Logs Exchanged", val: chatMessages.filter(c => !c.isSystem).length, color: "text-slate-400" }
                 ].map((stat, idx) => (
                   <div key={idx} className="bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-2xl p-5 shadow-lg border-t-2 border-t-red-500/50">
@@ -2156,7 +2237,7 @@ export default function App() {
                     {dispatchAlert ? (
                       <>
                         <div className="flex justify-between items-center py-0.5">
-                          <span className="text-red-400 font-bold">Active Radar Alert</span>
+                          <span className="text-red-405 font-bold">Active Radar Alert</span>
                           <b className="text-emerald-500 animate-pulse">BROADCASTING</b>
                         </div>
                         <div className="flex justify-between items-center py-0.5">
@@ -2233,19 +2314,63 @@ export default function App() {
         </div>
       )}
 
-      {/* Clean Footer */}
-      <footer className="border-t border-slate-200 dark:border-slate-850 bg-white dark:bg-[#090D16] py-8 text-xs text-slate-455 mt-16 transition-colors select-none">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-gradient-to-tr from-red-600 to-red-500 flex items-center justify-center text-white">
-              <Heart className="w-3.5 h-3.5 fill-white" />
+      {/* 2. Elite visual dark-themed customized support footer matching screenshot */}
+      <footer className="border-t border-slate-850 bg-[#090D16] py-12 text-xs text-slate-400 transition-colors select-none">
+        <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 font-sans">
+          
+          {/* Col 1: Logo & description */}
+          <div className="space-y-4 text-left">
+            <div className="flex items-center gap-2">
+              <div className="w-7.5 h-7.5 rounded bg-gradient-to-tr from-red-650 to-red-500 flex items-center justify-center text-white">
+                <Heart className="w-4 h-4 fill-white" />
+              </div>
+              <span className="font-display font-extrabold text-lg text-white">
+                OneBlood
+              </span>
             </div>
-            <span className="font-bold text-slate-650 dark:text-slate-400">
-              OneBlood Platform
-            </span>
+            <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
+              OneBlood is a state-of-the-art real-time blood emergency platform connecting patients, individual donors, and local blood banks instantly.
+            </p>
+            <div className="text-[10px] text-emerald-450 font-bold font-mono">
+              🛡️ AI-verified medical documentation protection
+            </div>
+          </div>
+
+          {/* Col 2: QUICK LINKS */}
+          <div className="space-y-4 text-left md:pl-12">
+            <h4 className="font-mono text-[10.5px] font-black uppercase text-white tracking-widest">QUICK LINKS</h4>
+            <ul className="space-y-2 text-[11px] text-slate-400 list-none p-0 font-medium">
+              <li><button onClick={() => { setUserRole('patient'); setIsLoggedIn(true); }} className="hover:text-red-500 bg-transparent border-none outline-none cursor-pointer p-0 text-slate-400">Find Donors & Banks</button></li>
+              <li><button onClick={() => { setUserRole('patient'); setIsLoggedIn(true); }} className="hover:text-red-500 bg-transparent border-none outline-none cursor-pointer p-0 text-slate-400">Request Emergency Blood</button></li>
+              <li><button className="hover:text-red-500 bg-transparent border-none outline-none cursor-pointer p-0 text-slate-400">How It Works</button></li>
+              <li><button onClick={() => { setAuthMode('register'); setActiveLoginType('donor'); }} className="hover:text-red-500 bg-transparent border-none outline-none cursor-pointer p-0 text-slate-400">Become a Donor</button></li>
+            </ul>
+          </div>
+
+          {/* Col 3: CONTACT & SUPPORT */}
+          <div className="space-y-4 text-left">
+            <h4 className="font-mono text-[10.5px] font-black uppercase text-white tracking-widest">CONTACT & SUPPORT</h4>
+            <p className="text-[11px] leading-relaxed font-medium">
+              Hubballi-Dharwad District,<br />
+              Karnataka, India.
+            </p>
+            <div className="pt-2">
+              <span className="block text-[9.5px] font-bold text-slate-500 font-mono">EMERGENCY RESPONSE HOTLINE</span>
+              <a href="tel:108" className="inline-block mt-1 font-mono font-black text-xs text-red-500 bg-red-500/10 border border-red-500/20 rounded px-2 py-1 tracking-wider text-decoration-none">
+                Emergency Line: 108 / 1910
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        {/* bottom bar */}
+        <div className="max-w-6xl mx-auto px-4 pt-8 border-t border-slate-850/50 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[10px] text-slate-550">
+          <div>
+            <p>© 2026 OneBlood. All rights reserved.</p>
           </div>
           <div>
-            <p className="text-[10px] font-mono text-slate-450 dark:text-slate-500">© 2026 OneBlood. B.Tech Computer Science & Engineering System. All rights reserved.</p>
+            <p>Made with ❤️ for medical emergency services.</p>
           </div>
         </div>
       </footer>
