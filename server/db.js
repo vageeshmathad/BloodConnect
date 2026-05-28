@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 
 // Database configurations
 const SQLITE_DB_PATH = path.join(__dirname, 'bloodfinder.db');
-const MONGO_URI = 'mongodb://127.0.0.1:27017/bloodfinder';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/bloodfinder';
 
 export let dbMode = 'sqlite'; // 'mongodb' or 'sqlite'
 let sqliteDb = null;

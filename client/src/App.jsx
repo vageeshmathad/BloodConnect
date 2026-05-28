@@ -6,6 +6,10 @@ import {
 } from 'lucide-react';
 import InteractiveMap from './components/InteractiveMap';
 
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:5000'
+  : 'https://bloodconnect-2-l0wd.onrender.com';
+
 // Seed data with clinical-grade donor profiles
 const INITIAL_LOCAL_DONORS = [
   { id: 1, name: 'Amit Patel', bloodGroup: 'O-', phone: '+91 99001 12233', email: 'amit@example.com', password: 'password123', latitude: 12.9730, longitude: 77.5920, isAvailable: true, distance: 0.3, age: 25, city: 'Bangalore', state: 'Karnataka', lastDonatedDate: '2026-03-01', medicalHistory: 'No chronic diseases', eligibilityFlags: [], consentChecked: true },
@@ -208,7 +212,7 @@ export default function App() {
   const verifyBackendStatus = async () => {
     setCheckingHealth(true);
     try {
-      const res = await fetch('http://localhost:5000/');
+      const res = await fetch(`${API_BASE_URL}/`);
       if (res.ok) {
         const data = await res.json();
         setServerOnline(true);
@@ -288,7 +292,7 @@ export default function App() {
     
     if (serverOnline) {
       try {
-        const queryUrl = `http://localhost:5000/api/blood/search?bloodGroup=${encodeURIComponent(searchBloodGroup)}&radius=${searchRadius}&latitude=${userLocation.latitude}&longitude=${userLocation.longitude}`;
+        const queryUrl = `${API_BASE_URL}/api/blood/search?bloodGroup=${encodeURIComponent(searchBloodGroup)}&radius=${searchRadius}&latitude=${userLocation.latitude}&longitude=${userLocation.longitude}`;
         const response = await fetch(queryUrl);
         const data = await response.json();
         
@@ -420,7 +424,7 @@ export default function App() {
 
     if (serverOnline) {
       try {
-        const res = await fetch('http://localhost:5000/api/donors/register', {
+        const res = await fetch(`${API_BASE_URL}/api/donors/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -487,7 +491,7 @@ export default function App() {
 
     if (serverOnline) {
       try {
-        const res = await fetch('http://localhost:5000/api/donors/login', {
+        const res = await fetch(`${API_BASE_URL}/api/donors/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(donorLoginForm)
@@ -563,7 +567,7 @@ export default function App() {
 
     if (serverOnline) {
       try {
-        const res = await fetch('http://localhost:5000/api/donors/toggle-availability', {
+        const res = await fetch(`${API_BASE_URL}/api/donors/toggle-availability`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: loggedInDonor.email, isAvailable: targetStatus })
@@ -618,7 +622,7 @@ export default function App() {
 
     if (serverOnline) {
       try {
-        const res = await fetch('http://localhost:5000/api/bloodbanks/register', {
+        const res = await fetch(`${API_BASE_URL}/api/bloodbanks/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -678,7 +682,7 @@ export default function App() {
 
     if (serverOnline) {
       try {
-        const res = await fetch(`http://localhost:5000/api/bloodbanks/${adminSelectedBank.id}/inventory`, {
+        const res = await fetch(`${API_BASE_URL}/api/bloodbanks/${adminSelectedBank.id}/inventory`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ inventory: updatedInventory })
