@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Heart, Phone, Navigation, User, Search, MapPin, Landmark, 
   Activity, Check, X, ShieldAlert, Compass, RotateCw, Plus, 
-  Settings, LogOut, Sun, Moon, AlertTriangle, ArrowRight, Eye, Key, LogIn, Lock, Mail, Award, Calendar, CheckSquare, ChevronDown, Radio, ShieldCheck, MessageSquare, Send, Upload, EyeOff, RefreshCw, Syringe, Building2
+  Settings, LogOut, Sun, Moon, AlertTriangle, ArrowRight, Eye, Key, LogIn, Lock, Mail, Award, Calendar, CheckSquare, ChevronDown, Radio, ShieldCheck, MessageSquare, Send, Upload, EyeOff, RefreshCw, Syringe, Building2, Globe
 } from 'lucide-react';
 import InteractiveMap from './components/InteractiveMap';
 
@@ -82,8 +82,193 @@ const GET_COMPATIBLE_TYPES = (group) => {
   }
 };
 
+const TRANSLATIONS = {
+  en: {
+    brandName: "OneBlood",
+    home: "Home",
+    noticeBoard: "📋 Notice Board",
+    howItWorks: "How It Works",
+    login: "Login",
+    signUp: "Sign Up",
+    signOut: "Sign Out",
+    roleLabel: "Role",
+    dashboardTitle: "OneBlood Coordination Dashboard",
+    heroTitle: "State-of-the-Art Real-Time Blood Coordination Network",
+    heroSubtitle: "Directly linking seekers with voluntary donors and certified local blood banks instantaneously.",
+    hallOfFame: "🏆 HALL OF FAME",
+    impactTitle: "OneBlood's Impact — Since Day One",
+    impactSubtitle: "Every number here is a life touched. Every drop donated through OneBlood has made this possible.",
+    donationsVal: "850",
+    donationsLabel: "SUCCESSFUL DONATIONS",
+    transfusionsVal: "740",
+    transfusionsLabel: "TRANSFUSIONS COMPLETED",
+    livesVal: "2,550",
+    livesLabel: "LIVES IMPACTED",
+    citiesVal: "7",
+    citiesLabel: "CITIES REACHED",
+    smartSearch: "Smart Search",
+    manualSearch: "Manual Search",
+    searchBlood: "Search Blood",
+    myRequests: "My Requests",
+    emergencyOcrBanner: "EMERGENCY: Upload doctor prescription letter for instant verification matches.",
+    dropPrescription: "Drop prescription letter here",
+    dropPrescriptionSub: "PDF, JPG, PNG • Mobile Camera supported 📷",
+    scanning: "Analyzing requisition logs...",
+    scanSuccess: "Requisition Verified",
+    verifiedPatient: "Verified Patient:",
+    requiredBlood: "Required Blood Group:",
+    matchingBanksDonors: "Unified Results within 25 km",
+    selectBloodGroup: "Select Required Blood Group",
+    searchRadiusLabel: "Search Perimeter",
+    findMatchingDonors: "Find Matches",
+    interactiveMapTitle: "Live Location Tracking Hubballi Map",
+    hospitalName1: "KIMS Blood Bank Hubli",
+    hospitalName2: "Hubli Lions Blood Bank",
+    hospitalName3: "Sha Damji Jadavji Chheda Memorial Rashtrotthana Blood Centre",
+    hospitalName4: "Prema Bindu Blood Bank",
+    emergencyLine: "Emergency Line: 108 / 1910",
+    becomeDonor: "Become a Voluntary Donor",
+    roleSeeker: "🩺 Seeker (Patient)",
+    roleDonor: "🩸 Voluntary Donor",
+    roleBloodBank: "🏦 Blood Bank stock",
+    roleAdmin: "🛡️ Admin Board",
+    liveTracking: "LIVE LOCATION TRACING ACTIVE",
+    traceMyLocation: "Trace My Location Live",
+    professionalNotice: "This platform is fully optimized for Hubballi-Dharwad healthcare networks.",
+    selectLanguage: "🌍 Choose Your Preferred Language / ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ / भाषा चुनें",
+    userFriendlyIdeas: "✨ Smart Health Guide",
+    userFriendlyTip1: "Upload a photo of your doctor's requisition letter. Our AI will automatically extract the patient name and required blood group to save time.",
+    userFriendlyTip2: "Check the Live Location Tracing map to find nearby donors and direct transport routing in real-time.",
+    userFriendlyTip3: "Use the secure WebSocket coordination chat to coordinate with matched donors anonymously until you consent to unlock phone details.",
+    userFriendlyTip4: "Blood Banks update their inventory continuously. Look for the sky-blue shield markers on the map for instant availability."
+  },
+  kn: {
+    brandName: "ಒನ್ ಬ್ಲಡ್ (OneBlood)",
+    home: "ಮುಖಪುಟ",
+    noticeBoard: "📋 ಪ್ರಕಟಣಾ ಫಲಕ",
+    howItWorks: "ಕೆಲಸ ಮಾಡುವ ವಿಧಾನ",
+    login: "ಲಾಗಿನ್",
+    signUp: "ನೋಂದಣಿ",
+    signOut: "ಸೈನ್ ಔಟ್",
+    roleLabel: "ಪಾತ್ರ",
+    dashboardTitle: "ಒನ್ ಬ್ಲಡ್ ಸಮನ್ವಯ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+    heroTitle: "ನೈಜ-ಸಮಯದ ಅತ್ಯಾಧುನಿಕ ರಕ್ತ ಸಮನ್ವಯ ಜಾಲ",
+    heroSubtitle: "ರಕ್ತದ ಅವಶ್ಯಕತೆ ಇರುವವರನ್ನು ಸ್ವಯಂಪ್ರೇರಿತ ದಾನಿಗಳು ಮತ್ತು ಪ್ರಮಾಣೀಕೃತ ಸ್ಥಳೀಯ ರಕ್ತನಿಧಿಗಳೊಂದಿಗೆ ತಕ್ಷಣವೇ ಸಂಪರ್ಕಿಸುವುದು.",
+    hallOfFame: "🏆 ಕೀರ್ತಿ ಫಲಕ",
+    impactTitle: "ಒನ್ ಬ್ಲಡ್ ಪ್ರಭಾವ — ಮೊದಲ ದಿನದಿಂದಲೇ",
+    impactSubtitle: "ಇಲ್ಲಿರುವ ಪ್ರತಿ ಸಂಖ್ಯೆಯೂ ಸ್ಪರ್ಶಿಸಿದ ಜೀವವಾಗಿದೆ. ಒನ್ ಬ್ಲಡ್ ಮೂಲಕ ದಾನ ಮಾಡಿದ ಪ್ರತಿ ಹನಿಯೂ ಇದನ್ನು ಸಾಧ್ಯವಾಗಿಸಿದೆ.",
+    donationsVal: "೮೫೦",
+    donationsLabel: "ಯಶಸ್ವಿ ರಕ್ತದಾನಗಳು",
+    transfusionsVal: "೭೪೦",
+    transfusionsLabel: "ರಕ್ತ ವರ್ಗಾವಣೆಗಳು ಪೂರ್ಣಗೊಂಡಿವೆ",
+    livesVal: "೨,೫೫೦",
+    livesLabel: "ಜೀವಗಳ ರಕ್ಷಣೆ",
+    citiesVal: "೭",
+    citiesLabel: "ತಲುಪಿದ ನಗರಗಳು",
+    smartSearch: "ಸ್ಮಾರ್ಟ್ ಹುಡುಕಾಟ (AI OCR)",
+    manualSearch: "ಹಸ್ತಚಾಲಿತ ಹುಡುಕಾಟ",
+    searchBlood: "ರಕ್ತ ಹುಡುಕಾಟ",
+    myRequests: "ನನ್ನ ವಿನಂತಿಗಳು",
+    emergencyOcrBanner: "तुರ್ತು: ತಕ್ಷಣದ ಪರಿಶೀಲನೆ ಮತ್ತು ಹೊಂದಾಣಿಕೆಗಾಗಿ ವೈದ್ಯರ ಪ್ರಿಸ್ಕ್ರಿಪ್ಷನ್ ಪತ್ರವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.",
+    dropPrescription: "ನಿಮ್ಮ ಪ್ರಿಸ್ಕ್ರಿಪ್ಷನ್ ಪತ್ರವನ್ನು ಇಲ್ಲಿ ಹಾಕಿ",
+    dropPrescriptionSub: "PDF, JPG, PNG • ಮೊಬೈಲ್ ಕ್ಯಾಮೆರಾ ಬೆಂಬಲಿತವಾಗಿದೆ 📷",
+    scanning: "ಪ್ರಿಸ್ಕ್ರಿಪ್ಷನ್ ವಿಶ್ಲೇಷಿಸಲಾಗುತ್ತಿದೆ...",
+    scanSuccess: "ಪ್ರಿಸ್ಕ್ರಿಪ್ಷನ್ ಯಶಸ್ವಿಯಾಗಿ ಪರಿಶೀಲಿಸಲಾಗಿದೆ",
+    verifiedPatient: "ಪರಿಶೀಲಿಸಿದ ರೋಗಿ:",
+    requiredBlood: "ಅಗತ್ಯವಿರುವ ರಕ್ತದ ಗುಂಪು:",
+    matchingBanksDonors: "25 ಕಿ.ಮೀ ಒಳಗಿನ ಒಟ್ಟು ಫಲಿತಾಂಶಗಳು",
+    selectBloodGroup: "ಅಗತ್ಯವಿರುವ ರಕ್ತದ ಗುಂಪನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    searchRadiusLabel: "ಹುಡುಕಾಟದ ತ್ರಿಜ್ಯ",
+    findMatchingDonors: "ಹೊಂದಾಣಿಕೆಗಳನ್ನು ಹುಡುಕಿ",
+    interactiveMapTitle: "ಲೈವ್ ಲೊಕೇಶನ್ ಟ್ರ್ಯಾಕಿಂಗ್ ಹುಬ್ಬಳ್ಳಿ ನಕ್ಷೆ",
+    hospitalName1: "ಕಿಮ್ಸ್ ರಕ್ತನಿಧಿ ಹುಬ್ಬಳ್ಳಿ",
+    hospitalName2: "ಹುಬ್ಬಳ್ಳಿ ಲಯನ್ಸ್ ರಕ್ತನಿಧಿ",
+    hospitalName3: "ಶಾ ದಮ್ಜಿ ಜಾದವ್ಜಿ ಛೇಡಾ ಸ್ಮಾರಕ ರಾಷ್ಟ್ರೋತ್ಥಾನ ರಕ್ತ ಕೇಂದ್ರ",
+    hospitalName4: "ಪ್ರೇಮ ಬಿಂದು ರಕ್ತನಿಧಿ",
+    emergencyLine: "ತುರ್ತು ಸಹಾಯವಾಣಿ: 108 / 1910",
+    becomeDonor: "ಸ್ವಯಂಪ್ರೇರಿತ ರಕ್ತದಾನಿಯಾಗಿ",
+    roleSeeker: "🩺 ರೋಗಿ (Seeker)",
+    roleDonor: "🩸 ಸ್ವಯಂಪ್ರೇರಿತ ದಾನಿ",
+    roleBloodBank: "🏦 ರಕ್ತನಿಧಿ ದಾಸ್ತಾನು",
+    roleAdmin: "🛡️ ಆಡಳಿತ ಮಂಡಳಿ",
+    liveTracking: "ಲೈವ್ ಸ್ಥಳ ಪತ್ತೆ ಸಕ್ರಿಯವಾಗಿದೆ",
+    traceMyLocation: "ನನ್ನ ಲೈವ್ ಸ್ಥಳವನ್ನು ಪತ್ತೆ ಮಾಡಿ",
+    professionalNotice: "ಈ ವೇದಿಕೆಯು ಹುಬ್ಬಳ್ಳಿ-ಧಾರವಾಡ ಆರೋಗ್ಯ ನೆಟ್‌ವರ್ಕ್‌ಗಳಿಗಾಗಿ ಸಂಪೂರ್ಣವಾಗಿ ಆಪ್ಟಿಮೈಸ್ ಮಾಡಲ್ಪಟ್ಟಿದೆ.",
+    selectLanguage: "🌍 ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ / CHOOSE YOUR LANGUAGE",
+    userFriendlyIdeas: "✨ ಸ್ಮಾರ್ಟ್ ಹೆಲ್ತ್ ಗೈಡ್",
+    userFriendlyTip1: "ನಿಮ್ಮ ವೈದ್ಯರ ಪ್ರಿಸ್ಕ್ರಿಪ್ಷನ್ ಪತ್ರದ ಫೋಟೋವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ. ಸಮಯವನ್ನು ಉಳಿಸಲು ನಮ್ಮ AI ಸ್ವಯಂಚಾಲಿತವಾಗಿ ರೋಗಿಯ ಹೆಸರು ಮತ್ತು ಅಗತ್ಯವಿರುವ ರಕ್ತದ ಗುಂಪನ್ನು ಗುರುತಿಸುತ್ತದೆ.",
+    userFriendlyTip2: "ಲೈವ್ ಸ್ಥಳ ಟ್ರ್ಯಾಕಿಂಗ್ ನಕ್ಷೆಯನ್ನು ಪರಿಶೀಲಿಸುವ ಮೂಲಕ ಹತ್ತಿರದ ರಕ್ತದಾನಿಗಳನ್ನು ಮತ್ತು ನೈಜ-ಸಮಯದ ಮಾರ್ಗಸೂಚಿಗಳನ್ನು ತಿಳಿದುಕೊಳ್ಳಿ.",
+    userFriendlyTip3: "ನೀವು ಸಂಪರ್ಕ ಸಂಖ್ಯೆಯನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಲು ಒಪ್ಪಿಗೆ ನೀಡುವವರೆಗೆ ಹೊಂದಾಣಿಕೆಯಾದ ದಾನಿಗಳೊಂದಿಗೆ ಅನಾಮಧೇಯವಾಗಿ ಚಾಟ್ ಮಾಡಲು ಸುರಕ್ಷಿತ ವೆಬ್‌ಸಾಕೆಟ್ ಚಾಟ್ ಬಳಸಿ.",
+    userFriendlyTip4: "ರಕ್ತನಿಧಿಗಳು ತಮ್ಮ ದಾಸ್ತಾನನ್ನು ನಿಯಮಿತವಾಗಿ ನವೀಕರಿಸುತ್ತಾರೆ. ನಕ್ಷೆಯಲ್ಲಿ ನೀಲಿ ಬಣ್ಣದ ಲೋಗೋ ಚಿಹ್ನೆಗಳನ್ನು ನೋಡಿ ತಕ್ಷಣ ಲಭ್ಯತೆಯನ್ನು ತಿಳಿಯಿರಿ."
+  },
+  hi: {
+    brandName: "वनब्लड (OneBlood)",
+    home: "होमपेज",
+    noticeBoard: "📋 सूचना पट्ट",
+    howItWorks: "कार्यप्रणाली",
+    login: "लॉगिन",
+    signUp: "साइन अप करें",
+    signOut: "साइन आउट",
+    roleLabel: "भूमिका",
+    dashboardTitle: "वनब्लड समन्वय डैशबोर्ड",
+    heroTitle: "अत्याधुनिक रीयल-टाइम रक्त समन्वय नेटवर्क",
+    heroSubtitle: "रक्त की आवश्यकता वाले लोगों को स्वैच्छिक दाताओं और प्रमाणित स्थानीय रक्त बैंकों से तुरंत जोड़ना।",
+    hallOfFame: "🏆 हॉल ऑफ फेम",
+    impactTitle: "वनब्लड का प्रभाव — पहले दिन से",
+    impactSubtitle: "यहाँ दिया गया हर आँकड़ा एक जीवन को छूता है। वनब्लड के माध्यम से दान की गई हर बूंद ने इसे संभव बनाया है।",
+    donationsVal: "850",
+    donationsLabel: "सफल रक्तदान",
+    transfusionsVal: "740",
+    transfusionsLabel: "रक्त आधान पूर्ण",
+    livesVal: "2,550",
+    livesLabel: "बचाई गई जानें",
+    citiesVal: "7",
+    citiesLabel: "पहुंचे हुए शहर",
+    smartSearch: "स्मार्ट खोज (AI OCR)",
+    manualSearch: "मैन्युअल खोज",
+    searchBlood: "रक्त खोजें",
+    myRequests: "मेरे अनुरोध",
+    emergencyOcrBanner: "आपातकालीन: तत्काल सत्यापन और मिलान के लिए डॉक्टर का नुस्खा पत्र अपलोड करें।",
+    dropPrescription: "अपना प्रिस्क्रिप्शन पत्र यहाँ डालें",
+    dropPrescriptionSub: "PDF, JPG, PNG • मोबाइल कैमरा समर्थित 📷",
+    scanning: "प्रिस्क्रिप्शन स्कैन किया जा रहा है...",
+    scanSuccess: "प्रिस्क्रिप्शन सत्यापित किया गया",
+    verifiedPatient: "सत्यापित रोगी:",
+    requiredBlood: "आवश्यक रक्त समूह:",
+    matchingBanksDonors: "25 किमी के भीतर एकीकृत परिणाम",
+    selectBloodGroup: "आवश्यक रक्त समूह चुनें",
+    searchRadiusLabel: "खोज त्रिज्या",
+    findMatchingDonors: "मिलान खोजें",
+    interactiveMapTitle: "लाइव लोकेशन ट्रैकिंग हुबली मानचित्र",
+    hospitalName1: "किम्स ब्लड बैंक हुबली",
+    hospitalName2: "हुबली लायंस ब्लड बैंक",
+    hospitalName3: "शा दमजी जादवजी छेड़ा मेमोरियल राष्ट्रोत्थान ब्लड सेंटर",
+    hospitalName4: "प्रेमा बिंदु ब्लड बैंक",
+    emergencyLine: "आपातकालीन हेल्पलाइन: 108 / 1910",
+    becomeDonor: "स्वैच्छिक रक्तदाता बनें",
+    roleSeeker: "🩺 रोगी (Seeker)",
+    roleDonor: "🩸 स्वैच्छिक दाता",
+    roleBloodBank: "🏦 ब्लड बैंक स्टॉक",
+    roleAdmin: "🛡️ एडमिन बोर्ड",
+    liveTracking: "लाइव लोकेशन ट्रेसिंग सक्रिय है",
+    traceMyLocation: "मेरी लाइव स्थिति ट्रेस करें",
+    professionalNotice: "यह प्लेटफॉर्म हुबली-धारवाड़ स्वास्थ्य सेवा नेटवर्क के लिए पूरी तरह से अनुकूलित है.",
+    selectLanguage: "🌍 भाषा चुनें / CHOOSE YOUR LANGUAGE",
+    userFriendlyIdeas: "✨ स्मार्ट स्वास्थ्य गाइड",
+    userFriendlyTip1: "अपने डॉक्टर के पर्चे की एक फोटो अपलोड करें। हमारा AI समय बचाने के लिए रोगी का नाम और आवश्यक रक्त समूह स्वचालित रूप से निकाल लेगा।",
+    userFriendlyTip2: "निकटतम दाताओं और वास्तविक समय परिवहन मार्ग को खोजने के लिए लाइव लोकेशन ट्रेसिंग मानचित्र की जाँच करें।",
+    userFriendlyTip3: "जब तक आप अपना फोन विवरण अनलॉक करने के लिए सहमत नहीं हो जाते, तब तक मिलान किए गए दाताओं के साथ गुमनाम रूप से संवाद करने के लिए सुरक्षित चैट का उपयोग करें।",
+    userFriendlyTip4: "ब्लड बैंक अपने स्टॉक को लगातार अपडेट करते हैं। तत्काल उपलब्धता के लिए मानचित्र पर नीले रंग के शील्ड मार्करों को देखें।"
+  }
+};
+
 export default function App() {
   const [darkMode, setDarkMode] = useState(true); // default dark theme as requested
+  const [language, setLanguage] = useState('en');
+  const [helpPanelExpanded, setHelpPanelExpanded] = useState(true);
+  const t = (key) => {
+    return TRANSLATIONS[language]?.[key] || TRANSLATIONS['en']?.[key] || key;
+  };
 
   // --- Auth Session States ---
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -852,6 +1037,32 @@ export default function App() {
               </div>
             )}
 
+            {/* Highly Visible Header Language Switcher Dropdown */}
+            <div className="relative group">
+              <button className="text-xs bg-slate-900 border border-slate-800 px-3 py-2 rounded-lg font-bold flex items-center gap-1.5 text-slate-200 cursor-pointer shadow-sm hover:border-red-500/35 transition-all">
+                <Globe className="w-3.5 h-3.5 text-red-500 animate-pulse" />
+                <span>{language === 'en' ? '🇬🇧 EN' : language === 'kn' ? '💛 ಕನ್ನಡ' : '🧡 हिन्दी'}</span>
+                <ChevronDown className="w-3 h-3 text-slate-400" />
+              </button>
+              <div className="absolute right-0 mt-1.5 w-40 bg-[#111625] border border-slate-800 rounded-xl shadow-xl overflow-hidden hidden group-hover:block z-55 font-sans">
+                {[
+                  { code: 'en', name: '🇬🇧 English' },
+                  { code: 'kn', name: '💛 ಕನ್ನಡ (Kannada)' },
+                  { code: 'hi', name: '🧡 हिन्दी (Hindi)' }
+                ].map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => {
+                      setLanguage(lang.code);
+                      triggerToast(`Switched language to: ${lang.name}`, "success");
+                    }}
+                    className="w-full text-left px-4 py-2.5 text-xs font-semibold hover:bg-slate-850 text-slate-250 cursor-pointer border-none bg-transparent">
+                    {lang.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <button 
               onClick={() => setDarkMode(!darkMode)}
               className="w-8.5 h-8.5 rounded-lg border border-slate-800 text-slate-500 hover:text-red-500 flex items-center justify-center transition-colors cursor-pointer bg-transparent">
@@ -887,12 +1098,49 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <h1 className="font-display font-black text-3xl md:text-4xl text-white tracking-tight">Join OneBlood</h1>
-                  <p className="text-xs text-slate-400 font-medium">Let's start with a simple question to get you to the right place.</p>
+                {/* 🌍 GORGEOUS GLOWING WELCOME LANGUAGE SWITCHER GRID */}
+                <div className="bg-slate-950/50 p-5 border border-slate-850 rounded-2xl space-y-3.5 shadow-inner">
+                  <span className="block text-[9px] font-black uppercase tracking-widest text-red-500 font-mono text-center">
+                    {t('selectLanguage')}
+                  </span>
+                  <div className="grid grid-cols-3 gap-3">
+                    {[
+                      { code: 'en', flag: '🇬🇧', label: 'English', sub: 'Global' },
+                      { code: 'kn', flag: '💛', label: 'ಕನ್ನಡ', sub: 'ಪ್ರಾದೇಶಿಕ' },
+                      { code: 'hi', flag: '🧡', label: 'हिन्दी', sub: 'ರಾಷ್ಟ್ರೀय' }
+                    ].map((l) => (
+                      <button
+                        key={l.code}
+                        type="button"
+                        onClick={() => {
+                          setLanguage(l.code);
+                          triggerToast(`Switched Language: ${l.label}`, "success");
+                        }}
+                        className={`p-3 rounded-xl border flex flex-col items-center justify-center transition-all cursor-pointer bg-transparent border-none ${
+                          language === l.code 
+                            ? 'bg-red-500/10 text-white border-2 border-red-500/40 shadow-[0_0_15px_rgba(239,68,68,0.25)] scale-[1.03] font-black' 
+                            : 'bg-slate-900 border border-slate-800 hover:border-slate-750 text-slate-400 hover:text-white hover:scale-[1.01]'
+                        }`}>
+                        <span className="text-xl mb-1">{l.flag}</span>
+                        <span className="text-xs font-black tracking-tight leading-none block">{l.label}</span>
+                        <span className="text-[7.5px] uppercase font-mono text-slate-500 mt-1 block">{l.sub}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
-                <span className="block text-[10px] font-black uppercase tracking-widest text-slate-500 font-mono">— ARE YOU A DONOR, OR ARE YOU LOOKING FOR ONE? —</span>
+                <div className="space-y-2">
+                  <h1 className="font-display font-black text-3xl md:text-4xl text-white tracking-tight">
+                    {language === 'en' ? 'Welcome to OneBlood' : language === 'kn' ? 'ಒನ್ ಬ್ಲಡ್‌ಗೆ ಸುಸ್ವಾಗತ' : 'वनब्लड में आपका स्वागत है'}
+                  </h1>
+                  <p className="text-xs text-slate-400 font-medium">
+                    {language === 'en' ? "Let's start with a simple question to get you to the right place." : language === 'kn' ? "ಸರಿಯಾದ ಸ್ಥಳಕ್ಕೆ ನಿಮ್ಮನ್ನು ಕರೆದೊಯ್ಯಲು ಒಂದು ಸರಳ ಪ್ರಶ್ನೆಯೊಂದಿಗೆ ಪ್ರಾರಂಭಿಸೋಣ." : "आपको सही स्थान पर ले जाने के लिए एक साधारण प्रश्न से शुरू करते हैं।"}
+                  </p>
+                </div>
+
+                <span className="block text-[10px] font-black uppercase tracking-widest text-slate-500 font-mono">
+                  — {language === 'en' ? 'ARE YOU A DONOR, OR ARE YOU LOOKING FOR ONE?' : language === 'kn' ? 'ನೀವು ರಕ್ತದಾನ ಮಾಡಲು ಬಯಸುತ್ತೀರಾ ಅಥವಾ ರಕ್ತದ ಅವಶ್ಯಕತೆ ಇದೆಯೇ?' : 'क्या आप रक्तदान करना चाहते हैं या आपको रक्त की आवश्यकता है?'} —
+                </span>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
                   
@@ -1291,13 +1539,13 @@ export default function App() {
               
               <div className="space-y-4 max-w-xl mx-auto">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 border border-amber-500/25 rounded-full text-[10px] font-black tracking-widest text-amber-500 uppercase font-mono">
-                  🏆 HALL OF FAME
+                  {t('hallOfFame')}
                 </span>
                 <h2 className="font-display font-black text-3xl md:text-4xl text-white tracking-tight leading-tight">
-                  OneBlood's Impact — Since Day One
+                  {t('impactTitle')}
                 </h2>
                 <p className="text-slate-400 text-xs md:text-sm leading-relaxed font-sans font-medium">
-                  Every number here is a life touched. Every drop donated through OneBlood has made this possible.
+                  {t('impactSubtitle')}
                 </p>
               </div>
 
@@ -1311,8 +1559,8 @@ export default function App() {
                       <Heart className="w-5 h-5 text-red-500 fill-red-500" />
                     </div>
                   </div>
-                  <b className="text-4xl font-black text-red-500 block mb-1">850</b>
-                  <span className="text-[9.5px] font-bold text-slate-500 tracking-wider uppercase block">SUCCESSFUL DONATIONS</span>
+                  <b className="text-4xl font-black text-red-500 block mb-1">{t('donationsVal')}</b>
+                  <span className="text-[9.5px] font-bold text-slate-500 tracking-wider uppercase block">{t('donationsLabel')}</span>
                 </div>
 
                 {/* 2. Transfusions Completed */}
@@ -1322,8 +1570,8 @@ export default function App() {
                       <Syringe className="w-5 h-5" />
                     </div>
                   </div>
-                  <b className="text-4xl font-black text-blue-500 block mb-1">740</b>
-                  <span className="text-[9.5px] font-bold text-slate-500 tracking-wider uppercase block">TRANSFUSIONS COMPLETED</span>
+                  <b className="text-4xl font-black text-blue-500 block mb-1">{t('transfusionsVal')}</b>
+                  <span className="text-[9.5px] font-bold text-slate-500 tracking-wider uppercase block">{t('transfusionsLabel')}</span>
                 </div>
 
                 {/* 3. Lives Impacted */}
@@ -1333,8 +1581,8 @@ export default function App() {
                       <Heart className="w-5 h-5 text-red-400 fill-red-450 animate-pulse" />
                     </div>
                   </div>
-                  <b className="text-4xl font-black text-red-500 block mb-1">2,550</b>
-                  <span className="text-[9.5px] font-bold text-slate-500 tracking-wider uppercase block">LIVES IMPACTED</span>
+                  <b className="text-4xl font-black text-red-500 block mb-1">{t('livesVal')}</b>
+                  <span className="text-[9.5px] font-bold text-slate-500 tracking-wider uppercase block">{t('livesLabel')}</span>
                 </div>
 
                 {/* 4. Cities Reached */}
@@ -1344,8 +1592,8 @@ export default function App() {
                       <Building2 className="w-5 h-5" />
                     </div>
                   </div>
-                  <b className="text-4xl font-black text-blue-500 block mb-1">7</b>
-                  <span className="text-[9.5px] font-bold text-slate-500 tracking-wider uppercase block">CITIES REACHED</span>
+                  <b className="text-4xl font-black text-blue-500 block mb-1">{t('citiesVal')}</b>
+                  <span className="text-[9.5px] font-bold text-slate-500 tracking-wider uppercase block">{t('citiesLabel')}</span>
                 </div>
 
               </div>
@@ -1370,21 +1618,63 @@ export default function App() {
               <div className="lg:col-span-4 space-y-6">
                 
                 {/* Search Mode Toggles */}
-                <div className="grid grid-cols-2 gap-1 bg-slate-950 p-1 rounded-xl text-center select-none font-mono">
+                <div className="grid grid-cols-2 gap-1 bg-slate-950 p-1.5 rounded-xl text-center select-none font-mono border border-slate-800 shadow-[0_0_15px_rgba(0,0,0,0.4)]">
                   <button
                     onClick={() => setSearchMethod('smart')}
-                    className={`py-2 text-[10px] font-black uppercase tracking-wider rounded-lg transition-colors cursor-pointer border-none ${
-                      searchMethod === 'smart' ? 'bg-red-500 text-white shadow-sm' : 'bg-transparent text-slate-400 hover:text-white'
+                    className={`py-2.5 text-[10.5px] font-black uppercase tracking-wider rounded-lg transition-all cursor-pointer border-none ${
+                      searchMethod === 'smart' 
+                        ? 'bg-red-650 text-white shadow-md shadow-red-500/20 border border-red-500/30 scale-[1.01]' 
+                        : 'bg-transparent text-slate-400 hover:text-white hover:bg-slate-900/40'
                     }`}>
-                    Smart Search
+                    🔍 {t('smartSearch')}
                   </button>
                   <button
                     onClick={() => setSearchMethod('manual')}
-                    className={`py-2 text-[10px] font-black uppercase tracking-wider rounded-lg transition-colors cursor-pointer border-none ${
-                      searchMethod === 'manual' ? 'bg-red-500 text-white shadow-sm' : 'bg-transparent text-slate-400 hover:text-white'
+                    className={`py-2.5 text-[10.5px] font-black uppercase tracking-wider rounded-lg transition-all cursor-pointer border-none ${
+                      searchMethod === 'manual' 
+                        ? 'bg-red-650 text-white shadow-md shadow-red-500/20 border border-red-500/30 scale-[1.01]' 
+                        : 'bg-transparent text-slate-400 hover:text-white hover:bg-slate-900/40'
                     }`}>
-                    Manual Search
+                    ✍️ {t('manualSearch')}
                   </button>
+                </div>
+
+                {/* ✨ GORGEOUS ACCESSIBLE USER-FRIENDLY HELP PANEL */}
+                <div className="bg-[#111625]/85 backdrop-blur-md border border-red-500/20 rounded-2xl p-4.5 shadow-lg space-y-3.5">
+                  <div className="flex items-center justify-between cursor-pointer select-none" onClick={() => setHelpPanelExpanded(!helpPanelExpanded)}>
+                    <div className="flex items-center gap-2">
+                      <div className="w-6.5 h-6.5 rounded-lg bg-red-500/10 flex items-center justify-center text-red-500">
+                        <Activity className="w-4 h-4" />
+                      </div>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-white font-mono flex items-center gap-1">
+                        {t('userFriendlyIdeas')}
+                      </span>
+                    </div>
+                    <span className="text-[9px] font-black text-slate-400 hover:text-white font-mono bg-slate-900 px-2 py-0.5 rounded border border-slate-800 transition-colors">
+                      {helpPanelExpanded ? 'CLOSE ✖' : 'EXPAND 🗖'}
+                    </span>
+                  </div>
+
+                  {helpPanelExpanded && (
+                    <div className="space-y-3 pt-2 text-[10.5px] leading-relaxed text-slate-350 border-t border-slate-850 animate-in fade-in duration-200">
+                      <div className="flex gap-2 items-start">
+                        <span className="text-red-500 font-bold">1.</span>
+                        <p>{t('userFriendlyTip1')}</p>
+                      </div>
+                      <div className="flex gap-2 items-start">
+                        <span className="text-red-500 font-bold">2.</span>
+                        <p>{t('userFriendlyTip2')}</p>
+                      </div>
+                      <div className="flex gap-2 items-start">
+                        <span className="text-red-500 font-bold">3.</span>
+                        <p>{t('userFriendlyTip3')}</p>
+                      </div>
+                      <div className="flex gap-2 items-start">
+                        <span className="text-red-500 font-bold">4.</span>
+                        <p>{t('userFriendlyTip4')}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-2xl p-5 shadow-sm space-y-5">
@@ -1501,25 +1791,34 @@ export default function App() {
                   </div>
 
                   {/* GPS Locator */}
-                  <div className="pt-2 border-t border-slate-850">
-                    <span className="block text-xs font-bold text-slate-400 mb-2 uppercase font-mono">Current Location</span>
-                    <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
+                  <div className="pt-2 border-t border-slate-850 space-y-3">
+                    <span className="block text-xs font-bold text-slate-400 uppercase font-mono">{t('liveTracking')}</span>
+                    
+                    <button
+                      onClick={simulateGPSLocation}
+                      className="w-full py-2.5 bg-emerald-600/10 hover:bg-emerald-600/20 border border-emerald-500/30 hover:border-emerald-500/60 rounded-xl text-emerald-400 font-extrabold text-[10.5px] uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-[0_0_12px_rgba(16,185,129,0.1)] border-none"
+                    >
+                      <MapPin className="w-4 h-4 text-emerald-500 animate-bounce" />
+                      {t('traceMyLocation')}
+                    </button>
+
+                    <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2">
                       <div className="flex justify-between items-center text-xs">
                         <span className="font-bold text-slate-200 flex items-center gap-1">
-                          <MapPin className="w-3.5 h-3.5 text-red-500" />
+                          <Compass className="w-3.5 h-3.5 text-red-500" />
                           {locationName}
                         </span>
-                        <button onClick={simulateGPSLocation} className="text-[9px] bg-blue-500/10 border border-blue-500/20 text-blue-400 font-bold px-2 py-0.5 rounded cursor-pointer">
-                          GPS Sync
-                        </button>
+                        <span className="px-1.5 py-0.5 rounded bg-red-500/10 border border-red-500/20 text-[9px] font-black uppercase text-red-405 font-mono">
+                          ACTIVE GPS
+                        </span>
                       </div>
-                      <p className="text-[9px] text-slate-500 font-mono">Lat: {userLocation.latitude.toFixed(4)} | Lng: {userLocation.longitude.toFixed(4)}</p>
+                      <p className="text-[9.5px] text-slate-500 font-mono">Lat: {userLocation.latitude.toFixed(4)} | Lng: {userLocation.longitude.toFixed(4)}</p>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-1 mt-2.5 font-mono text-[9px]">
-                      <button onClick={() => presetLocation("Hubballi Node", 12.9650, 77.5870)} className="py-1 px-0.5 bg-slate-950 border border-slate-800 text-slate-400 rounded cursor-pointer hover:border-slate-700">Hubballi</button>
-                      <button onClick={() => presetLocation("Central Bangalore", 12.9716, 77.5946)} className="py-1 px-0.5 bg-slate-950 border border-slate-800 text-slate-400 rounded cursor-pointer hover:border-slate-700">Bengaluru</button>
-                      <button onClick={() => presetLocation("Dharwad Node", 12.9099, 77.4851)} className="py-1 px-0.5 bg-slate-950 border border-slate-800 text-slate-400 rounded cursor-pointer hover:border-slate-700">Dharwad</button>
+                    <div className="grid grid-cols-3 gap-1 font-mono text-[9px]">
+                      <button onClick={() => presetLocation("Hubballi Node", 12.9650, 77.5870)} className="py-1.5 bg-slate-950 border border-slate-850 hover:border-slate-700 text-slate-400 rounded-lg cursor-pointer transition-colors">Hubballi</button>
+                      <button onClick={() => presetLocation("Central Bangalore", 12.9716, 77.5946)} className="py-1.5 bg-slate-950 border border-slate-850 hover:border-slate-700 text-slate-400 rounded-lg cursor-pointer transition-colors">Bengaluru</button>
+                      <button onClick={() => presetLocation("Dharwad Node", 12.9099, 77.4851)} className="py-1.5 bg-slate-950 border border-slate-850 hover:border-slate-700 text-slate-400 rounded-lg cursor-pointer transition-colors">Dharwad</button>
                     </div>
                   </div>
 

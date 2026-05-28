@@ -828,6 +828,21 @@ The visual theme adopts a modern, premium **dark-mode glassmorphism** that ensur
 * **Harmonized Color Palette**: Combines dark slate bases (`#090d16` and `#0f172a`) with vibrant crimson highlights (`#dc2626` and `#ef4444`) to direct the user's attention to critical alerts.
 * **High Contrast Integrity**: The primary buttons use a solid, high-contrast background (`bg-red-600 hover:bg-red-700`) with clean white overlay text, completely eliminating blurry gradients or low-contrast elements to maintain absolute compliance with WCAG AAA accessibility guidelines.
 
+### **8.5 Real-Time Multi-lingual Localization Engine (English, Kannada, Hindi)**
+To serve both regional and national stakeholders in the Hubballi-Dharwad metropolitan health corridor, OneBlood integrates a dynamic, client-side translation engine:
+* **Scope**: Fully localizes the global navigation header, seeker search dashboards, manual inputs, live GPS coordinate beacons, emergency OCR status reports, and support hotlines.
+* **Languages Supported**:
+  - **English (🇬🇧 EN)**: Default international clinical reference layer.
+  - **Kannada (💛 ಕನ್ನಡ)**: Local regional language maximizing rural accessibility and donor onboarding.
+  - **Hindi (🧡 हिन्दी)**: National language providing universal medical coordinator interaction.
+* **Visual Switchers**: Implements a sticky, glassmorphic dropdown trigger in the global navbar header, alongside a prominent horizontal colored language select greetings panel on the main onboarding screen, achieving instant 1-click layout translation without page reload.
+
+### **8.6 Advanced Visual Contrast and User-Friendly Assistive Overlays**
+To satisfy high-visibility standards under stressful, low-light clinical emergency conditions, several user-experience enhancements were engineered:
+* **Double-Bordered Capsule Toggles**: Search tabs ("Smart Search" vs "Manual Search") are rendered as solid slate cards with thick borders (`border-slate-800`) and a glowing active neon shadow (`shadow-[0_0_15px_rgba(239,68,68,0.25)]`) indicating which mode is currently selected.
+* **Interactive Smart Health Guide**: A prominent collapsible panel greets new users on the dashboard, explaining AI OCR scan procedures, real-time geofence coordinates tuning, and anonymous WebSocket coordination.
+* **"Trace My Location Live" GPS Beacon**: Implements a dedicated, high-visibility centering button (`bg-emerald-600/10`) that accesses the browser's standard W3C Geolocation API, panning the Leaflet map dynamically to the user's active node coords.
+
 ---
 
 <div class="page-break"></div>
