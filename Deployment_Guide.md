@@ -16,11 +16,16 @@ For college project reviews and examiner evaluations, we recommend two distinct 
 3. Choose a region close to you (e.g., AWS / Mumbai) and click **Create**.
 4. In the **Security Quickstart**:
    - Set a Database Username and a secure Password. **(Save these credentials!)**
+   - > [!IMPORTANT]
+     > If your password contains special characters (like `@`, `:`, `/`, `?`, etc.), they **MUST** be URL-encoded (percent-encoded) when put into the connection string.
+     > For example:
+     > - If your password is `vageesh@2006`, the `@` must be written as `%40`, so the password part in the URI becomes `vageesh%402006`.
+     > - If you don't do this, MongoDB will fail to connect on Render with errors like `querySrv ENOTFOUND _mongodb._tcp.2006`.
    - Under **IP Access List**, add `0.0.0.0/0` (Allow access from anywhere, required for cloud platforms like Render).
 5. Click **Database** under deployment, select your cluster, and click **Connect**.
 6. Select **Drivers** and copy your **Connection String**. It will look like this:
    `mongodb+srv://<username>:<password>@cluster0.xxxx.mongodb.net/bloodconnect?retryWrites=true&w=majority`
-7. Replace `<username>` and `<password>` with your database user credentials.
+7. Replace `<username>` and `<password>` with your database user credentials (ensuring any special characters are percent-encoded as explained above).
 
 ---
 
