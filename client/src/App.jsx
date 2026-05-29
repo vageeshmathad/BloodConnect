@@ -379,6 +379,7 @@ export default function App() {
 
   // --- Toast alert ---
   const [toast, setToast] = useState(null);
+  const [showRoleDropdown, setShowRoleDropdown] = useState(false);
 
   // --- In-Memory Local Backups ---
   const [localDonors, setLocalDonors] = useState(() => {
@@ -1071,34 +1072,46 @@ export default function App() {
             {isLoggedIn ? (
               <div className="flex items-center gap-3">
                 {/* Unified Role Switcher Selector Dropdown */}
-                <div className="relative group">
-                  <button className="text-xs bg-slate-900 border border-slate-800 px-3 py-2 rounded-lg font-bold flex items-center gap-1.5 text-slate-200 cursor-pointer shadow-sm">
+                <div className="relative">
+                  <button 
+                    onClick={() => setShowRoleDropdown(prev => !prev)}
+                    className="text-xs bg-slate-900 border border-slate-800 px-3 py-2 rounded-lg font-bold flex items-center gap-1.5 text-slate-200 cursor-pointer shadow-sm focus:border-red-500 transition-colors">
                     <Activity className="w-3.5 h-3.5 text-red-500" />
                     <span>Role: <b className="capitalize text-red-500 font-extrabold">{userRole === 'patient' ? 'Seeker' : userRole === 'blood_bank' ? 'Blood Bank' : userRole}</b></span>
                     <ChevronDown className="w-3 h-3 text-slate-400" />
                   </button>
                   {/* Dropdown Menu */}
-                  <div className="absolute right-0 mt-1.5 w-48 bg-[#111625] border border-slate-800 rounded-xl shadow-xl overflow-hidden hidden group-hover:block z-50 font-sans">
-                    {[
-                      { role: 'patient', label: '🩺 Seeker (Patient)' },
-                      { role: 'donor', label: '🩸 Voluntary Donor' },
-                      { role: 'blood_bank', label: '🏦 Blood Bank stock' },
-                      { role: 'admin', label: '🛡️ Admin Board' }
-                    ].map((item) => (
-                      <button
-                        key={item.role}
-                        onClick={() => {
-                          setUserRole(item.role);
-                          if (item.role === 'donor' && !loggedInDonor) {
-                            setLoggedInDonor(localDonors[0]);
-                          }
-                          triggerToast(`Switched to ${item.label} Dashboard`, "success");
-                        }}
-                        className="w-full text-left px-4 py-2.5 text-xs font-semibold hover:bg-slate-850 text-slate-250 cursor-pointer border-none bg-transparent">
-                        {item.label}
-                      </button>
-                    ))}
-                  </div>
+                  {showRoleDropdown && (
+                    <>
+                      {/* Click outside overlay to dismiss */}
+                      <div 
+                        className="fixed inset-0 z-40 bg-transparent" 
+                        onClick={() => setShowRoleDropdown(false)}
+                      />
+                      <div className="absolute right-0 mt-1.5 w-48 bg-[#111625] border border-slate-800 rounded-xl shadow-xl overflow-hidden z-50 font-sans animate-in fade-in slide-in-from-top-2 duration-150">
+                        {[
+                          { role: 'patient', label: '🩺 Seeker (Patient)' },
+                          { role: 'donor', label: '🩸 Voluntary Donor' },
+                          { role: 'blood_bank', label: '🏦 Blood Bank stock' },
+                          { role: 'admin', label: '🛡️ Admin Board' }
+                        ].map((item) => (
+                          <button
+                            key={item.role}
+                            onClick={() => {
+                              setUserRole(item.role);
+                              if (item.role === 'donor' && !loggedInDonor) {
+                                setLoggedInDonor(localDonors[0]);
+                              }
+                              setShowRoleDropdown(false);
+                              triggerToast(`Switched to ${item.label} Dashboard`, "success");
+                            }}
+                            className="w-full text-left px-4 py-2.5 text-xs font-semibold hover:bg-slate-850 text-slate-250 cursor-pointer border-none bg-transparent flex items-center gap-2 transition-colors">
+                            {item.label}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 <span className="hidden sm:inline-block text-[10px] font-bold text-slate-400 font-mono">
