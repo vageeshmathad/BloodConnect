@@ -851,6 +851,12 @@ To satisfy high-visibility standards under stressful, low-light clinical emergen
 * **Interactive Smart Health Guide**: A prominent collapsible panel greets new users on the dashboard, explaining AI OCR scan procedures, real-time geofence coordinates tuning, and anonymous WebSocket coordination.
 * **"Trace My Location Live" GPS Beacon**: Implements a dedicated, high-visibility centering button (`bg-emerald-600/10`) that accesses the browser's standard W3C Geolocation API, panning the Leaflet map dynamically to the user's active node coords.
 
+### **8.7 Interactive Public Notice Board & Stepped How-It-Works Manuals**
+To make the platform highly complete and educational for unauthenticated public users, two dedicated glassmorphic overlay modules were engineered:
+* **Clinical Notice Board**: A real-time system announcement hub displaying critical emergency O- negative SOS broadcasts, upcoming blood donation drives, and facility stock updates. It is fully localized and displays alerts with vibrant crimson, amber, and blue status badges.
+* **How-It-Works Interactive Manual**: A stepped, 4-stage visual guide walking users through the secure full-stack emergency loop. It details AI prescription OCR parsing, spherical geodesy proximity calculations, cryptographic mask consents, and WebSocket-based coordination routing.
+* **Unified Accessibility**: Both modals are bound to the header navbar and footer links, ensuring seamless navigation and strict compliance with public safety-first information indexing guidelines.
+
 ---
 
 <div class="page-break"></div>

@@ -266,6 +266,8 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(true); // default dark theme as requested
   const [language, setLanguage] = useState('en');
   const [helpPanelExpanded, setHelpPanelExpanded] = useState(true);
+  const [showNoticeBoardModal, setShowNoticeBoardModal] = useState(false);
+  const [showHowItWorksModal, setShowHowItWorksModal] = useState(false);
   const t = (key) => {
     return TRANSLATIONS[language]?.[key] || TRANSLATIONS['en']?.[key] || key;
   };
@@ -966,8 +968,8 @@ export default function App() {
           {!isLoggedIn && (
             <div className="hidden md:flex gap-5 text-xs font-bold text-slate-300">
               <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-red-500 transition-colors bg-transparent border-none cursor-pointer">Home</button>
-              <button className="hover:text-red-500 transition-colors bg-transparent border-none cursor-pointer flex items-center gap-1">📋 Notice Board</button>
-              <button className="hover:text-red-500 transition-colors bg-transparent border-none cursor-pointer">How It Works</button>
+              <button onClick={() => setShowNoticeBoardModal(true)} className="hover:text-red-500 transition-colors bg-transparent border-none cursor-pointer flex items-center gap-1">📋 Notice Board</button>
+              <button onClick={() => setShowHowItWorksModal(true)} className="hover:text-red-500 transition-colors bg-transparent border-none cursor-pointer">How It Works</button>
             </div>
           )}
 
@@ -2971,7 +2973,7 @@ export default function App() {
             <ul className="space-y-2 text-[11px] text-slate-400 list-none p-0 font-medium">
               <li><button onClick={() => { setUserRole('patient'); setIsLoggedIn(true); }} className="hover:text-red-500 bg-transparent border-none outline-none cursor-pointer p-0 text-slate-400">Find Donors & Banks</button></li>
               <li><button onClick={() => { setUserRole('patient'); setIsLoggedIn(true); }} className="hover:text-red-500 bg-transparent border-none outline-none cursor-pointer p-0 text-slate-400">Request Emergency Blood</button></li>
-              <li><button className="hover:text-red-500 bg-transparent border-none outline-none cursor-pointer p-0 text-slate-400">How It Works</button></li>
+              <li><button onClick={() => setShowHowItWorksModal(true)} className="hover:text-red-500 bg-transparent border-none outline-none cursor-pointer p-0 text-slate-400">How It Works</button></li>
               <li><button onClick={() => { setAuthMode('register'); setActiveLoginType('donor'); }} className="hover:text-red-500 bg-transparent border-none outline-none cursor-pointer p-0 text-slate-400">Become a Donor</button></li>
             </ul>
           </div>
@@ -3004,6 +3006,219 @@ export default function App() {
         </div>
       </footer>
 
+      {/* 📋 GORGEOUS LOCALIZED GLASSMORPHIC NOTICE BOARD MODAL */}
+      {showNoticeBoardModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-[#111625]/90 border border-slate-800 rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-2xl relative animate-in zoom-in-95 duration-200 text-left space-y-6">
+            
+            {/* Close button */}
+            <button 
+              onClick={() => setShowNoticeBoardModal(false)}
+              className="absolute top-4 right-4 text-slate-500 hover:text-white bg-transparent border-none cursor-pointer text-base"
+            >
+              ✖
+            </button>
+
+            <div className="flex items-center gap-3 border-b border-slate-850 pb-4">
+              <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/25 flex items-center justify-center text-red-500 shadow-inner">
+                <Activity className="w-5.5 h-5.5 text-red-500 animate-pulse animate-duration-1000" />
+              </div>
+              <div>
+                <h3 className="font-display font-black text-xl text-white tracking-tight leading-tight">
+                  {language === 'en' ? 'Clinical Notice Board' : language === 'kn' ? 'ವೈದ್ಯಕೀಯ ಪ್ರಕಟಣಾ ಫಲಕ' : 'चिकित्सकीय सूचना पट्ट'}
+                </h3>
+                <p className="text-[10px] text-slate-550 font-mono tracking-wider uppercase mt-0.5">
+                  {language === 'en' ? 'Live System Broadcast Streams' : language === 'kn' ? 'ನೈಜ-ಸಮಯದ ಪ್ರಕಟಣೆಗಳು' : 'लाइव सिस्टम प्रसारण स्ट्रीम'}
+                </p>
+              </div>
+            </div>
+
+            {/* List of active notices */}
+            <div className="space-y-4 max-h-[350px] overflow-y-auto pr-1">
+              
+              {/* Notice 1: Emergency */}
+              <div className="p-4 bg-red-500/5 border border-red-500/15 rounded-2xl space-y-2 relative shadow-inner">
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-red-500/15 border border-red-500/25 rounded text-[8.5px] font-black uppercase text-red-405 font-mono tracking-widest animate-pulse">
+                  🚨 {language === 'en' ? 'CRITICAL SOS' : language === 'kn' ? 'ಅತ್ಯಂತ ತುರ್ತು' : 'अति आवश्यक'}
+                </span>
+                <p className="text-xs leading-relaxed text-slate-200">
+                  {language === 'en' 
+                    ? '🚨 EMERGENCY O- NEGATIVE: KIMS Hospital Hubli requires O- blood immediately for a critical surgical trauma case. Contact ID: OB-782910.' 
+                    : language === 'kn' 
+                    ? '🚨 ತುರ್ತು O- ನೆಗೆಟಿವ್: ಕಿಮ್ಸ್ ಆಸ್ಪತ್ರೆ ಹುಬ್ಬಳ್ಳಿಗೆ ತುರ್ತು ಅಪಘಾತ ಪ್ರಕರಣಕ್ಕಾಗಿ O- ರಕ್ತದ ತಕ್ಷಣದ ಅವಶ್ಯಕತೆ ಇದೆ. ಸಂಪರ್ಕ ID: OB-782910.' 
+                    : '🚨 आपातकालीन O- नेगेटिव: किम्स अस्पताल हुबली में एक दुर्घटना मामले के लिए तुरंत O- रक्त की आवश्यकता है। संपर्क ID: OB-782910.'}
+                </p>
+                <div className="flex justify-between items-center text-[9px] text-slate-550 font-mono pt-1.5 border-t border-red-500/10">
+                  <span>Hubballi Sector Node</span>
+                  <span>Active 5m ago</span>
+                </div>
+              </div>
+
+              {/* Notice 2: Camps */}
+              <div className="p-4 bg-slate-950/60 border border-slate-850 rounded-2xl space-y-2">
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-amber-500/10 border border-amber-500/20 rounded text-[8.5px] font-black uppercase text-amber-550 font-mono tracking-widest">
+                  📅 {language === 'en' ? 'DONATION CAMP' : language === 'kn' ? 'ರಕ್ತದಾನ ಶಿಬಿರ' : 'रक्तदान शिविर'}
+                </span>
+                <p className="text-xs leading-relaxed text-slate-350">
+                  {language === 'en' 
+                    ? '📅 VOLUNTARY CAMP: Hubli Lions Blood Bank is organizing a voluntary blood donation drive at Lions Club Complex, Deshpande Nagar on June 5, 2026.' 
+                    : language === 'kn' 
+                    ? '📅 ಸ್ವಯಂಪ್ರೇರಿತ ಶಿಬಿರ: ಹುಬ್ಬಳ್ಳಿ ಲಯನ್ಸ್ ರಕ್ತನಿಧಿಯು ಜೂನ್ 5, 2026 ರಂದು ದೇಶಪಾಂಡೆ ನಗರದ ಲಯನ್ಸ್ ಕ್ಲಬ್ ಆವರಣದಲ್ಲಿ ರಕ್ತದಾನ ಶಿಬಿರವನ್ನು ಆಯೋಜಿಸುತ್ತಿದೆ.' 
+                    : '📅 स्वैच्छिक शिविर: हुबली लायंस ब्लड बैंक 5 जून, 2026 को देशपांडे नगर स्थित लायंस क्लब परिसर में रक्तदान शिविर का आयोजन कर रहा है।'}
+                </p>
+                <div className="flex justify-between items-center text-[9px] text-slate-550 font-mono pt-1.5 border-t border-slate-900">
+                  <span>Hubballi Lions Club</span>
+                  <span>Active 2h ago</span>
+                </div>
+              </div>
+
+              {/* Notice 3: Stocks restock */}
+              <div className="p-4 bg-slate-950/60 border border-slate-850 rounded-2xl space-y-2">
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 rounded text-[8.5px] font-black uppercase text-blue-450 font-mono tracking-widest">
+                  🏥 {language === 'en' ? 'STOCK RESTOCKED' : language === 'kn' ? 'ದಾಸ್ತಾನು ಅಪ್‌ಡೇಟ್' : 'स्टॉक अपडेट'}
+                </span>
+                <p className="text-xs leading-relaxed text-slate-350">
+                  {language === 'en' 
+                    ? '🏥 INVENTORY UPDATED: Prema Bindu Blood Bank (Dharwad) restocked 25 fresh units of O- and AB- blood groups following successful camps.' 
+                    : language === 'kn' 
+                    ? '🏥 ದಾಸ್ತಾನು ನವೀಕರಣ: ಪ್ರೇಮ ಬಿಂದು ರಕ್ತನಿಧಿ (ಧಾರವಾಡ) ಯಶಸ್ವಿ ಶಿಬಿರಗಳ ನಂತರ O- ಮತ್ತು AB- ರಕ್ತದ ಗುಂಪುಗಳ 25 ಹೊಸ ಯುನಿಟ್‌ಗಳೊಂದಿಗೆ ದಾಸ್ತಾನನ್ನು ನವೀಕರಿಸಿದೆ.' 
+                    : '🏥 स्टॉक अपडेट: प्रेमा बिंदु ब्लड बैंक (धारवाड़) ने सफल शिविरों के बाद O- और AB- रक्त समूहों की 25 ताज़ा इकाइयों के साथ अपने स्टॉक को अपडेट किया है।'}
+                </p>
+                <div className="flex justify-between items-center text-[9px] text-slate-550 font-mono pt-1.5 border-t border-slate-900">
+                  <span>Dharwad District Node</span>
+                  <span>Active 5h ago</span>
+                </div>
+              </div>
+
+            </div>
+
+            <button 
+              onClick={() => setShowNoticeBoardModal(false)}
+              className="w-full py-3 bg-red-650 hover:bg-red-600 text-white font-extrabold text-xs rounded-xl shadow-lg border-none uppercase tracking-wider font-mono cursor-pointer"
+            >
+              {language === 'en' ? 'Acknowledge Broadcasts' : language === 'kn' ? 'ಘೋಷಣೆಗಳನ್ನು ಅಂಗೀಕರಿಸಿ' : 'प्रसारण स्वीकार करें'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 🗺️ GORGEOUS LOCALIZED GLASSMORPHIC HOW IT WORKS STEPPED MODAL */}
+      {showHowItWorksModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-[#111625]/90 border border-slate-800 rounded-3xl p-6 md:p-8 max-w-xl w-full shadow-2xl relative animate-in zoom-in-95 duration-200 text-left space-y-6">
+            
+            {/* Close button */}
+            <button 
+              onClick={() => setShowHowItWorksModal(false)}
+              className="absolute top-4 right-4 text-slate-500 hover:text-white bg-transparent border-none cursor-pointer text-base"
+            >
+              ✖
+            </button>
+
+            <div className="flex items-center gap-3 border-b border-slate-850 pb-4">
+              <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/25 flex items-center justify-center text-red-500 shadow-inner">
+                <Compass className="w-5.5 h-5.5 text-red-500 animate-spin" />
+              </div>
+              <div>
+                <h3 className="font-display font-black text-xl text-white tracking-tight leading-tight">
+                  {language === 'en' ? 'How OneBlood Works' : language === 'kn' ? 'ಒನ್ ಬ್ಲಡ್ ಕೆಲಸ ಮಾಡುವ ವಿಧಾನ' : 'वनब्लड कार्यप्रणाली'}
+                </h3>
+                <p className="text-[10px] text-slate-550 font-mono tracking-wider uppercase mt-0.5">
+                  {language === 'en' ? 'Secure Geofenced Coordination Loop' : language === 'kn' ? 'ಸುರಕ್ಷಿತ ಜಿಯೋಫೆನ್ಸ್ಡ್ ಸಮನ್ವಯ ವಿಧಾನ' : 'सुरक्षित जियोफेंस्ड समन्वय पाश'}
+                </p>
+              </div>
+            </div>
+
+            {/* Stepped process list */}
+            <div className="space-y-4 max-h-[360px] overflow-y-auto pr-1">
+              
+              {/* Step 1 */}
+              <div className="flex gap-4 items-start p-3.5 rounded-2xl bg-slate-950/60 border border-slate-855">
+                <div className="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 font-mono font-black text-xs flex-shrink-0">
+                  1
+                </div>
+                <div className="space-y-1">
+                  <h4 className="text-xs font-black text-white uppercase tracking-wider font-mono">
+                    {language === 'en' ? 'AI Requisition Scanner (OCR)' : language === 'kn' ? 'AI ಪ್ರಿಸ್ಕ್ರಿಪ್ಷನ್ ಸ್ಕ್ಯಾನರ್ (OCR)' : 'AI प्रिस्क्रिप्शन स्कैनर (OCR)'}
+                  </h4>
+                  <p className="text-[10.5px] leading-relaxed text-slate-400">
+                    {language === 'en' 
+                      ? 'Seekers upload doctor prescription letters. Our client-side AI instantly parses patient credentials and required blood group to avoid manual entry mistakes.' 
+                      : language === 'kn' 
+                      ? 'ರೋಗಿಗಳು ವೈದ್ಯರ ಪ್ರಿಸ್ಕ್ರಿಪ್ಷನ್ ಪತ್ರಗಳನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡುತ್ತಾರೆ. ತಪ್ಪುಗಳನ್ನು ತಡೆಯಲು ನಮ್ಮ AI ತಕ್ಷಣವೇ ರೋಗಿಯ ಹೆಸರು ಮತ್ತು ಅಗತ್ಯವಿರುವ ರಕ್ತದ ಗುಂಪನ್ನು ಗುರುತಿಸುತ್ತದೆ.' 
+                      : 'रोगी डॉक्टर के पर्चे के पत्रों को अपलोड करते हैं। हमारा AI मैन्युअल प्रविष्टि की गलतियों से बचने के लिए रोगी के नाम और आवश्यक रक्त समूह का तुरंत विश्लेषण करता है।'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 2 */}
+              <div className="flex gap-4 items-start p-3.5 rounded-2xl bg-slate-950/60 border border-slate-855">
+                <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 font-mono font-black text-xs flex-shrink-0">
+                  2
+                </div>
+                <div className="space-y-1">
+                  <h4 className="text-xs font-black text-white uppercase tracking-wider font-mono">
+                    {language === 'en' ? 'Geofenced Radial Matching' : language === 'kn' ? 'ಜಿಯೋಫೆನ್ಸ್ಡ್ ರೇಡಿಯಲ್ ಮ್ಯಾಚಿಂಗ್' : 'जियोफेंस्ड रेडियल मैचिंग'}
+                  </h4>
+                  <p className="text-[10.5px] leading-relaxed text-slate-400">
+                    {language === 'en' 
+                      ? 'Using absolute spherical geodesy (Haversine Formula), the system instantly searches for available voluntary donors and blood banks within 25 km.' 
+                      : language === 'kn' 
+                      ? 'ಹ್ಯಾವರ್ಸಿನ್ ಸೂತ್ರವನ್ನು ಬಳಸಿಕೊಂಡು, ಸಿಸ್ಟಮ್ 25 ಕಿ.ಮೀ ವ್ಯಾಪ್ತಿಯಲ್ಲಿ ಲಭ್ಯವಿರುವ ಸ್ವಯಂಪ್ರೇರಿತ ದಾನಿಗಳು ಮತ್ತು ರಕ್ತನಿಧಿಗಳನ್ನು ತಕ್ಷಣವೇ ಹುಡುಕುತ್ತದೆ.' 
+                      : 'हैवरसाइन फॉर्मूला का उपयोग करके, सिस्टम तुरंत 25 किमी के भीतर उपलब्ध स्वैच्छिक दाताओं और रक्त बैंकों की खोज करता है।'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 3 */}
+              <div className="flex gap-4 items-start p-3.5 rounded-2xl bg-slate-950/60 border border-slate-855">
+                <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 font-mono font-black text-xs flex-shrink-0">
+                  3
+                </div>
+                <div className="space-y-1">
+                  <h4 className="text-xs font-black text-white uppercase tracking-wider font-mono">
+                    {language === 'en' ? 'Cryptographic Handshake Consent' : language === 'kn' ? 'ಕ್ರಿಪ್ಟೋಗ್ರಾಫಿಕ್ ಒಪ್ಪಿಗೆ ಹ್ಯಾಂಡ್‌ಶೇಕ್' : 'क्रिप्टोग्राफिक सहमति हैंडशेक'}
+                  </h4>
+                  <p className="text-[10.5px] leading-relaxed text-slate-400">
+                    {language === 'en' 
+                      ? 'To preserve privacy, all contact coordinates are masked and encrypted. Communication occurs anonymously until the matched partner explicitly grants contact consent.' 
+                      : language === 'kn' 
+                      ? 'ಗೌಪ್ಯತೆಯನ್ನು ಕಾಪಾಡಲು, ಎಲ್ಲಾ ಸಂಪರ್ಕ ವಿವರಗಳನ್ನು ಮರೆಮಾಡಲಾಗುತ್ತದೆ. ಹೊಂದಾಣಿಕೆಯಾದ ದಾನಿ ಒಪ್ಪಿಗೆ ನೀಡುವವರೆಗೆ ಸಂವಹನವು ಸಂಪೂರ್ಣವಾಗಿ ಅನಾಮಧೇಯವಾಗಿರುತ್ತದೆ.' 
+                      : 'गोपनीयता बनाए रखने के लिए, सभी संपर्क विवरण छिपे रहते हैं। मिलान किए गए दाता द्वारा सहमति देने तक संचार पूरी तरह से गुमनाम रहता है।'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 4 */}
+              <div className="flex gap-4 items-start p-3.5 rounded-2xl bg-slate-950/60 border border-slate-855">
+                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-450 font-mono font-black text-xs flex-shrink-0">
+                  4
+                </div>
+                <div className="space-y-1">
+                  <h4 className="text-xs font-black text-white uppercase tracking-wider font-mono">
+                    {language === 'en' ? 'WebSocket Coordination Chat' : language === 'kn' ? 'ವೆಬ್‌ಸಾಕೆಟ್ ಸಂಯೋಜಿತ ಚಾಟ್' : 'वेबसॉकेट समन्वित चैट'}
+                  </h4>
+                  <p className="text-[10.5px] leading-relaxed text-slate-400">
+                    {language === 'en' 
+                      ? 'Real-time Socket.io secure chat channels open instantly, letting seekers and donors coordinate routing and dispatch updates directly.' 
+                      : language === 'kn' 
+                      ? 'ನೈಜ-ಸಮಯದ ವೆಬ್‌ಸಾಕೆಟ್ ಸುರಕ್ಷಿತ ಚಾಟ್ ಚಾನೆಲ್‌ಗಳು ತಕ್ಷಣವೇ ತೆರೆದುಕೊಳ್ಳುತ್ತವೆ, ಇದು ರೋಗಿಗಳು ಮತ್ತು ದಾನಿಗಳಿಗೆ ಸಂವಹನ ಮತ್ತು ಮಾರ್ಗಸೂಚಿಗಳನ್ನು ನವೀಕರಿಸಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ.' 
+                      : 'वास्तविक समय वेबसॉकेट सुरक्षित चैट चैनल तुरंत खुलते हैं, जिससे रोगी और दाता सीधे मार्ग और प्रेषण अपडेट का समन्वय कर सकते हैं।'}
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+            <button 
+              onClick={() => setShowHowItWorksModal(false)}
+              className="w-full py-3 bg-red-650 hover:bg-red-600 text-white font-extrabold text-xs rounded-xl shadow-lg border-none uppercase tracking-wider font-mono cursor-pointer"
+            >
+              {language === 'en' ? 'Close Process Manual' : language === 'kn' ? 'ಪ್ರಕ್ರಿಯೆ ಕೈಪಿಡಿಯನ್ನು ಮುಚ್ಚಿ' : 'प्रक्रिया नियमावली बंद करें'}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
