@@ -151,9 +151,9 @@ export const initDb = async () => {
     console.log("Attempting to connect to MongoDB...");
     mongoose.set('strictQuery', false);
     
-    // Timeout in 3 seconds to avoid blocking local runs if MongoDB is not present
+    // Timeout in 15 seconds to avoid blocking local runs if MongoDB is not present
     await mongoose.connect(MONGO_URI, {
-      serverSelectionTimeoutMS: 3000
+      serverSelectionTimeoutMS: 15000
     });
     
     dbMode = 'mongodb';
