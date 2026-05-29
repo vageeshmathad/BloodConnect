@@ -680,7 +680,7 @@ export default function App() {
     registerDonorLocally(payload);
   };
 
-  const registerDonorLocally = (payload) => {
+  const registerDonorLocally = async (payload) => {
     const nextId = Math.max(...localDonors.map(d => d.id), 0) + 1;
     const newDonor = {
       id: nextId,
@@ -701,6 +701,40 @@ export default function App() {
       consentChecked: payload.consentChecked,
       distance: parseFloat(calculateDistance(userLocation.latitude, userLocation.longitude, payload.latitude, payload.longitude).toFixed(2))
     };
+
+    // If server is online, save to MongoDB/SQLite database on the backend!
+    if (serverOnline) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/donors/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: payload.name,
+            bloodGroup: payload.bloodGroup,
+            phone: '+91 ' + payload.phone,
+            email: payload.email.toLowerCase(),
+            password: payload.password,
+            latitude: payload.latitude,
+            longitude: payload.longitude,
+            age: parseInt(payload.age),
+            city: payload.city,
+            state: payload.state,
+            lastDonatedDate: payload.lastDonatedDate || '',
+            medicalHistory: `Weight: ${payload.weight || '55'} kg | Clinical History: ${payload.medicalHistory || 'None'}`,
+            eligibilityFlags: payload.eligibilityFlags,
+            consentChecked: payload.consentChecked
+          })
+        });
+        const result = await response.json();
+        if (result.success) {
+          console.log("Donor successfully written to server database!");
+        } else {
+          triggerToast(`Database Save Error: ${result.error}`, "warning");
+        }
+      } catch (err) {
+        console.error("Failed to register donor on backend server:", err);
+      }
+    }
 
     try {
       const saved = localStorage.getItem('oneblood_registered_donors');
@@ -731,7 +765,7 @@ export default function App() {
   };
 
   // MOCK LOGINS
-  const handleDonorLogin = (e) => {
+  const handleDonorLogin = async (e) => {
     e.preventDefault();
     setDonorLoading(true);
     setDonorLoginError('');
@@ -740,6 +774,63 @@ export default function App() {
       setDonorLoginError("Please enter a valid email format.");
       setDonorLoading(false);
       return;
+    }
+
+    if (serverOnline) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/donors/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: donorLoginForm.email.toLowerCase(),
+            password: donorLoginForm.password
+          })
+        });
+        const result = await response.json();
+        if (result.success && result.donor) {
+          const dbDonor = {
+            id: result.donor.id,
+            name: result.donor.name,
+            bloodGroup: result.donor.bloodGroup,
+            phone: result.donor.phone,
+            email: result.donor.email.toLowerCase(),
+            password: donorLoginForm.password,
+            latitude: result.donor.latitude,
+            longitude: result.donor.longitude,
+            isAvailable: result.donor.isAvailable,
+            age: result.donor.age,
+            city: result.donor.city,
+            state: result.donor.state,
+            lastDonatedDate: result.donor.lastDonatedDate,
+            medicalHistory: result.donor.medicalHistory,
+            eligibilityFlags: result.donor.eligibilityFlags,
+            consentChecked: result.donor.consentChecked,
+            distance: parseFloat(calculateDistance(userLocation.latitude, userLocation.longitude, result.donor.latitude, result.donor.longitude).toFixed(2))
+          };
+
+          setLocalDonors(prev => {
+            if (!prev.some(d => d.email.toLowerCase() === dbDonor.email.toLowerCase())) {
+              return [...prev, dbDonor];
+            }
+            return prev.map(d => d.email.toLowerCase() === dbDonor.email.toLowerCase() ? dbDonor : d);
+          });
+
+          setLoggedInDonor(dbDonor);
+          setUserRole('donor');
+          setIsLoggedIn(true);
+          setOneBloodId('OB-' + Math.floor(100000 + Math.random() * 900000));
+          triggerToast(`Welcome back, ${dbDonor.name}!`, "success");
+          setDonorLoginForm({ email: '', password: '' });
+          setDonorLoading(false);
+          return;
+        } else {
+          setDonorLoginError(result.error || "Invalid email or password.");
+          setDonorLoading(false);
+          return;
+        }
+      } catch (err) {
+        console.error("Backend login failed, falling back to local search", err);
+      }
     }
 
     setTimeout(() => {
