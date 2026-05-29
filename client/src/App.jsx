@@ -357,6 +357,11 @@ export default function App() {
   const [adminLoginForm, setAdminLoginForm] = useState({ email: '', password: '' });
   const [adminLoginError, setAdminLoginError] = useState('');
 
+  // --- Patient Auth States ---
+  const [patientLoginForm, setPatientLoginForm] = useState({ email: '', password: '' });
+  const [patientLoginError, setPatientLoginError] = useState('');
+  const [patientLoading, setPatientLoading] = useState(false);
+
   // --- Admin Desk States ---
   const [adminSelectedBank, setAdminSelectedBank] = useState(null);
   const [showAddBankPanel, setShowAddBankPanel] = useState(false);
@@ -376,7 +381,26 @@ export default function App() {
   const [toast, setToast] = useState(null);
 
   // --- In-Memory Local Backups ---
-  const [localDonors, setLocalDonors] = useState(INITIAL_LOCAL_DONORS);
+  const [localDonors, setLocalDonors] = useState(() => {
+    const saved = localStorage.getItem('oneblood_registered_donors');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          const combined = [...INITIAL_LOCAL_DONORS];
+          parsed.forEach(custom => {
+            if (!combined.some(d => d.email.toLowerCase() === custom.email.toLowerCase())) {
+              combined.push(custom);
+            }
+          });
+          return combined;
+        }
+      } catch (e) {
+        console.error("Failed to parse saved donors", e);
+      }
+    }
+    return INITIAL_LOCAL_DONORS;
+  });
   const [localBanks, setLocalBanks] = useState(INITIAL_LOCAL_BLOOD_BANKS);
 
   // --- Simulated Active Dispatch Radar logs ---
@@ -624,8 +648,9 @@ export default function App() {
   };
 
   const registerDonorLocally = (payload) => {
+    const nextId = Math.max(...localDonors.map(d => d.id), 0) + 1;
     const newDonor = {
-      id: localDonors.length + 1,
+      id: nextId,
       name: payload.name,
       bloodGroup: payload.bloodGroup,
       phone: '+91 ' + payload.phone,
@@ -643,6 +668,20 @@ export default function App() {
       consentChecked: payload.consentChecked,
       distance: parseFloat(calculateDistance(userLocation.latitude, userLocation.longitude, payload.latitude, payload.longitude).toFixed(2))
     };
+
+    try {
+      const saved = localStorage.getItem('oneblood_registered_donors');
+      const donorsList = saved ? JSON.parse(saved) : [];
+      if (donorsList.some(d => d.email.toLowerCase() === newDonor.email.toLowerCase())) {
+        triggerToast("Email already registered as voluntary donor.", "error");
+        return;
+      }
+      donorsList.push(newDonor);
+      localStorage.setItem('oneblood_registered_donors', JSON.stringify(donorsList));
+    } catch (e) {
+      console.error("Failed to save donor to localStorage", e);
+    }
+
     setLocalDonors(prev => [...prev, newDonor]);
     setLoggedInDonor(newDonor);
     setUserRole('donor');
@@ -702,10 +741,69 @@ export default function App() {
     }
 
     setValidationErrors({});
+    
+    const newPatient = {
+      id: 'OBP-' + Math.floor(100000 + Math.random() * 900000),
+      name: signUpForm.name,
+      email: signUpForm.email.toLowerCase(),
+      phone: signUpForm.phone,
+      city: signUpForm.city,
+      password: signUpForm.password
+    };
+
+    try {
+      const saved = localStorage.getItem('oneblood_registered_patients');
+      const patients = saved ? JSON.parse(saved) : [];
+      if (patients.some(p => p.email.toLowerCase() === newPatient.email.toLowerCase())) {
+        triggerToast("Email already registered as seeker.", "error");
+        return;
+      }
+      patients.push(newPatient);
+      localStorage.setItem('oneblood_registered_patients', JSON.stringify(patients));
+    } catch (e) {
+      console.error("Failed to persist patient account locally", e);
+    }
+
     setUserRole('patient');
     setIsLoggedIn(true);
-    setOneBloodId('OB-' + Math.floor(100000 + Math.random() * 900000));
+    setOneBloodId(newPatient.id);
     triggerToast(`Welcome to OneBlood, ${signUpForm.name}!`, "success");
+    setSignUpForm({ name: '', email: '', phone: '', city: 'Bengaluru', password: '' });
+  };
+
+  // PATIENT / SEEKER LOGIN
+  const handlePatientLogin = (e) => {
+    e.preventDefault();
+    setPatientLoading(true);
+    setPatientLoginError('');
+
+    if (!validateEmail(patientLoginForm.email)) {
+      setPatientLoginError("Please enter a valid email format.");
+      setPatientLoading(false);
+      return;
+    }
+
+    setTimeout(() => {
+      try {
+        const saved = localStorage.getItem('oneblood_registered_patients');
+        const patients = saved ? JSON.parse(saved) : [];
+        const check = patients.find(p => p.email.toLowerCase() === patientLoginForm.email.toLowerCase() && p.password === patientLoginForm.password);
+        
+        if (check) {
+          setUserRole('patient');
+          setIsLoggedIn(true);
+          setOneBloodId(check.id || ('OBP-' + Math.floor(100000 + Math.random() * 900000)));
+          triggerToast(`Welcome back, ${check.name}!`, "success");
+          setPatientLoginForm({ email: '', password: '' });
+        } else {
+          setPatientLoginError("Invalid email or password.");
+        }
+      } catch (e) {
+        console.error("Failed to load patients for login", e);
+        setPatientLoginError("Authentication service error.");
+      }
+      setPatientLoading(false);
+    }, 500);
   };
 
   // ADMIN LOGIN
@@ -733,11 +831,6 @@ export default function App() {
   const triggerDonorAutofill = () => {
     setDonorLoginForm({ email: 'amit@example.com', password: 'password123' });
     triggerToast("Donor credentials loaded.", "info");
-  };
-
-  const triggerAdminAutofill = () => {
-    setAdminLoginForm({ email: 'admin@oneblood.org', password: 'admin123' });
-    triggerToast("Admin credentials loaded.", "info");
   };
 
   const toggleAvailability = () => {
@@ -1244,10 +1337,52 @@ export default function App() {
                   ))}
                 </div>
 
-                {/* A. SEEKER QUICK LOGIN */}
+                {/* A. SEEKER CREDENTIAL LOGIN & SOS BYPASS */}
                 {activeLoginType === 'patient' && (
-                  <div className="space-y-4 text-center">
-                    <div className="p-4 rounded-xl border border-red-500/10 bg-red-500/[0.02] text-left">
+                  <form onSubmit={handlePatientLogin} className="space-y-4 font-sans text-left">
+                    <div className="space-y-1.5">
+                      <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Seeker Email Address</label>
+                      <input
+                        type="email" required
+                        value={patientLoginForm.email}
+                        onChange={(e) => setPatientLoginForm({ ...patientLoginForm, email: e.target.value })}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors"
+                        placeholder="e.g. patient@example.com"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Password</label>
+                      <input
+                        type="password" required
+                        value={patientLoginForm.password}
+                        onChange={(e) => setPatientLoginForm({ ...patientLoginForm, password: e.target.value })}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors"
+                        placeholder="Enter your password"
+                      />
+                    </div>
+
+                    {patientLoginError && (
+                      <div className="p-2.5 bg-red-950/40 border border-red-900 text-red-400 text-[10.5px] rounded-lg">
+                        ⚠️ {patientLoginError}
+                      </div>
+                    )}
+
+                    <div className="pt-2 text-xs font-mono">
+                      <button
+                        type="submit"
+                        disabled={patientLoading}
+                        className="w-full py-3 bg-red-650 hover:bg-red-600 text-white font-extrabold rounded-xl shadow-lg shadow-red-500/10 cursor-pointer border-none uppercase tracking-wider">
+                        {patientLoading ? "Verifying..." : "Sign In to Seeker Console"}
+                      </button>
+                    </div>
+
+                    <div className="relative flex py-2 items-center">
+                      <div className="flex-grow border-t border-slate-800"></div>
+                      <span className="flex-shrink mx-4 text-slate-500 text-[9px] uppercase font-mono tracking-widest">OR</span>
+                      <div className="flex-grow border-t border-slate-800"></div>
+                    </div>
+
+                    <div className="p-4 rounded-xl border border-red-500/10 bg-red-500/[0.02]">
                       <h3 className="text-xs font-extrabold text-white flex items-center gap-1 font-sans">
                         <Search className="w-4 h-4 text-red-500 animate-pulse" />
                         Emergency Search Deck
@@ -1255,24 +1390,25 @@ export default function App() {
                       <p className="text-[11px] text-slate-400 mt-1 leading-relaxed font-sans">
                         Instant client-side coordinate proximity radial query. Locate O-, A+, AB- compatible donors and stock supplies immediately without logging in.
                       </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setUserRole('patient');
+                          setIsLoggedIn(true);
+                          setOneBloodId('OB-' + Math.floor(100000 + Math.random() * 900000));
+                          triggerToast("Seeker emergency console active!", "success");
+                        }}
+                        className="w-full mt-3 py-2.5 bg-slate-850 hover:bg-slate-800 text-white font-extrabold text-xs rounded-xl shadow-md cursor-pointer border border-slate-850 hover:border-slate-700 transition-colors uppercase tracking-wider font-mono flex items-center justify-center gap-1.5">
+                        ⚡ Launch SOS Search Radar
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
                     </div>
-                    <button
-                      onClick={() => {
-                        setUserRole('patient');
-                        setIsLoggedIn(true);
-                        setOneBloodId('OB-' + Math.floor(100000 + Math.random() * 900000));
-                        triggerToast("Seeker emergency console active!", "success");
-                      }}
-                      className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-red-500/10 cursor-pointer border-none uppercase tracking-wider font-mono flex items-center justify-center gap-1.5">
-                      Launch SOS Search Radar
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
-                  </div>
+                  </form>
                 )}
 
                 {/* B. DONOR ACCOUNT LOGIN */}
                 {activeLoginType === 'donor' && (
-                  <form onSubmit={handleDonorLogin} className="space-y-4 font-sans">
+                  <form onSubmit={handleDonorLogin} className="space-y-4 font-sans text-left">
                     <div className="space-y-1.5">
                       <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Email Address</label>
                       <input
@@ -1333,7 +1469,7 @@ export default function App() {
 
                 {/* D. PLATFORM ADMIN AUTH */}
                 {activeLoginType === 'admin' && (
-                  <form onSubmit={handleAdminLogin} className="space-y-4">
+                  <form onSubmit={handleAdminLogin} className="space-y-4 text-left">
                     <div className="space-y-1.5">
                       <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Admin Email</label>
                       <input
@@ -1361,16 +1497,10 @@ export default function App() {
                       </div>
                     )}
 
-                    <div className="flex gap-2 pt-2 text-xs font-mono">
-                      <button
-                        type="button"
-                        onClick={triggerAdminAutofill}
-                        className="flex-1 py-3 border border-slate-800 hover:border-slate-700 hover:bg-slate-950 rounded-xl text-slate-400 cursor-pointer bg-transparent">
-                        Autofill Demo
-                      </button>
+                    <div className="pt-2 text-xs font-mono">
                       <button
                         type="submit"
-                        className="flex-1 py-3 bg-red-650 hover:bg-red-600 text-white font-extrabold rounded-xl shadow-lg shadow-red-500/10 cursor-pointer border-none uppercase tracking-wider">
+                        className="w-full py-3 bg-red-650 hover:bg-red-600 text-white font-extrabold rounded-xl shadow-lg shadow-red-500/10 cursor-pointer border-none uppercase tracking-wider">
                         Authorize Admin
                       </button>
                     </div>
