@@ -332,6 +332,7 @@ export default function App() {
     latitude: '',
     longitude: '',
     age: '',
+    weight: '55',
     city: 'Bengaluru',
     state: 'Karnataka',
     lastDonatedDate: '',
@@ -635,7 +636,7 @@ export default function App() {
       city: payload.city,
       state: payload.state,
       lastDonatedDate: payload.lastDonatedDate || '',
-      medicalHistory: payload.medicalHistory || 'None',
+      medicalHistory: `Weight: ${payload.weight || '55'} kg | Clinical History: ${payload.medicalHistory || 'None'}`,
       eligibilityFlags: payload.eligibilityFlags,
       consentChecked: payload.consentChecked,
       distance: parseFloat(calculateDistance(userLocation.latitude, userLocation.longitude, payload.latitude, payload.longitude).toFixed(2))
@@ -649,7 +650,7 @@ export default function App() {
     // reset form
     setDonorRegisterForm({
       name: '', bloodGroup: 'O-', phone: '', email: '', password: '', latitude: '', longitude: '',
-      age: '', city: 'Bengaluru', state: 'Karnataka', lastDonatedDate: '', medicalHistory: '', eligibilityFlags: [], consentChecked: false, isAvailable: true
+      age: '', weight: '55', city: 'Bengaluru', state: 'Karnataka', lastDonatedDate: '', medicalHistory: '', eligibilityFlags: [], consentChecked: false, isAvailable: true
     });
     setRegistrationStep(1);
     setQuestionnaireCollapsed(true);
@@ -1401,26 +1402,355 @@ export default function App() {
               <div className="max-w-xl mx-auto bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl animate-in zoom-in-95 duration-200">
                 
                 <div className="text-center space-y-2 mb-6">
-                  <h2 className="font-display font-black text-2xl text-white">Create Seeker Account</h2>
-                  <p className="text-xs text-slate-400">Locate compatible donors and hospital repositories instantly.</p>
+                  <h2 className="font-display font-black text-2xl text-white">
+                    {activeLoginType === 'donor' ? 'Voluntary Donor Registration Wizard' : 'Create Seeker Account'}
+                  </h2>
+                  <p className="text-xs text-slate-400">
+                    {activeLoginType === 'donor' ? `Step ${registrationStep} of 3 • Clinical Onboarding` : 'Locate compatible donors and hospital repositories instantly.'}
+                  </p>
                 </div>
 
                 {activeLoginType === 'donor' ? (
-                  // Redirect Donor registration to wizard component
-                  <div className="space-y-4 font-sans">
-                    <div className="p-4 bg-red-500/5 border border-red-500/15 text-red-400 text-xs rounded-xl">
-                      🩸 Voluntary Donor profile onboarding operates under clinical-grade wizard parameters. Access enrollment below.
+                  /* GORGEOUS 3-STEP CLINICAL-GRADE DONOR ONBOARDING WIZARD */
+                  <form onSubmit={(e) => { e.preventDefault(); handleWizardNext(); }} className="space-y-4 font-sans text-left">
+                    
+                    {/* Persona Onboarding Switches */}
+                    <div className="grid grid-cols-2 gap-4 mb-2 select-none">
+                      <button
+                        type="button"
+                        className="bg-red-500/10 border border-red-500/30 p-4 rounded-xl text-left cursor-pointer border-none">
+                        <span className="block text-[8.5px] font-black uppercase text-red-450 font-mono tracking-widest animate-pulse">Option 1 (Selected)</span>
+                        <h4 className="text-xs font-bold text-red-400 mt-1">I want to donate (Donor)</h4>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAuthMode('register');
+                          setActiveLoginType('patient');
+                        }}
+                        className="bg-slate-950 hover:bg-slate-850 border border-slate-800 hover:border-slate-700 p-4 rounded-xl text-left cursor-pointer group border-none">
+                        <span className="block text-[8.5px] font-black uppercase text-slate-500 font-mono tracking-widest">Option 2</span>
+                        <h4 className="text-xs font-bold text-white mt-1 group-hover:text-red-450">I'm looking for blood</h4>
+                      </button>
                     </div>
-                    <button
-                      onClick={() => {
-                        setUserRole('patient');
-                        setIsLoggedIn(true);
-                        triggerToast("Seeker console active. Switch role to donor profile.", "success");
-                      }}
-                      className="w-full py-3 bg-red-650 hover:bg-red-600 text-white font-extrabold text-xs rounded-xl shadow-lg cursor-pointer border-none uppercase tracking-wider font-mono">
-                      Activate account & Complete Donor Wizard
-                    </button>
-                  </div>
+
+                    <hr className="border-slate-850" />
+
+                    {/* STEP 1: PERSONAL & BIOMETRICS SCREEN */}
+                    {registrationStep === 1 && (
+                      <div className="space-y-4 animate-in fade-in duration-200">
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="space-y-1.5">
+                            <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Full Name</label>
+                            <input
+                              type="text" required
+                              value={donorRegisterForm.name}
+                              onChange={(e) => setDonorRegisterForm({ ...donorRegisterForm, name: e.target.value })}
+                              className={`w-full bg-slate-950 border ${validationErrors.name ? 'border-red-500' : 'border-slate-800'} rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors`}
+                              placeholder="e.g. Amit Patel"
+                            />
+                            {validationErrors.name && <p className="text-[10px] text-red-450 mt-1">⚠️ {validationErrors.name}</p>}
+                          </div>
+                          
+                          <div className="space-y-1.5">
+                            <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Select Blood Group</label>
+                            <select
+                              value={donorRegisterForm.bloodGroup}
+                              onChange={(e) => setDonorRegisterForm({ ...donorRegisterForm, bloodGroup: e.target.value })}
+                              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors cursor-pointer"
+                            >
+                              {['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+'].map(bg => (
+                                <option key={bg} value={bg}>{bg}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="space-y-1.5">
+                            <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Age (Years)</label>
+                            <input
+                              type="number" required min="1" max="100"
+                              value={donorRegisterForm.age}
+                              onChange={(e) => setDonorRegisterForm({ ...donorRegisterForm, age: e.target.value })}
+                              className={`w-full bg-slate-950 border ${validationErrors.age ? 'border-red-500' : 'border-slate-800'} rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors`}
+                              placeholder="Min 18 to donate"
+                            />
+                            {validationErrors.age && <p className="text-[10px] text-red-450 mt-1">⚠️ {validationErrors.age}</p>}
+                          </div>
+                          
+                          <div className="space-y-1.5">
+                            <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Weight (kg)</label>
+                            <input
+                              type="number" required min="30" max="200"
+                              value={donorRegisterForm.weight}
+                              onChange={(e) => setDonorRegisterForm({ ...donorRegisterForm, weight: e.target.value })}
+                              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors"
+                              placeholder="Min 45 kg required"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Contact Phone Number</label>
+                          <input
+                            type="tel" required
+                            value={donorRegisterForm.phone}
+                            onChange={(e) => setDonorRegisterForm({ ...donorRegisterForm, phone: e.target.value })}
+                            className={`w-full bg-slate-950 border ${validationErrors.phone ? 'border-red-500' : 'border-slate-800'} rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors font-mono`}
+                            placeholder="10-digit mobile number"
+                          />
+                          {validationErrors.phone && <p className="text-[10px] text-red-450 mt-1">⚠️ {validationErrors.phone}</p>}
+                        </div>
+
+                        <button
+                          type="submit"
+                          className="w-full py-3.5 bg-red-650 hover:bg-red-600 text-white font-extrabold text-xs rounded-xl shadow-lg cursor-pointer border-none uppercase tracking-wider font-mono flex items-center justify-center gap-1.5"
+                        >
+                          Next: Geolocation Coordinates ➔
+                        </button>
+                      </div>
+                    )}
+
+                    {/* STEP 2: GEOLOCATION & CONTACT SCREEN */}
+                    {registrationStep === 2 && (
+                      <div className="space-y-4 animate-in fade-in duration-200">
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="space-y-1.5">
+                            <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Email Address</label>
+                            <input
+                              type="email" required
+                              value={donorRegisterForm.email}
+                              onChange={(e) => setDonorRegisterForm({ ...donorRegisterForm, email: e.target.value })}
+                              className={`w-full bg-slate-950 border ${validationErrors.email ? 'border-red-500' : 'border-slate-800'} rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors`}
+                              placeholder="amit@example.com"
+                            />
+                            {validationErrors.email && <p className="text-[10px] text-red-450 mt-1">⚠️ {validationErrors.email}</p>}
+                          </div>
+                          
+                          <div className="space-y-1.5">
+                            <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Account Password</label>
+                            <input
+                              type="password" required
+                              value={donorRegisterForm.password}
+                              onChange={(e) => setDonorRegisterForm({ ...donorRegisterForm, password: e.target.value })}
+                              className={`w-full bg-slate-950 border ${validationErrors.password ? 'border-red-500' : 'border-slate-800'} rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors`}
+                              placeholder="Min 6 characters"
+                            />
+                            {validationErrors.password && <p className="text-[10px] text-red-450 mt-1">⚠️ {validationErrors.password}</p>}
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="space-y-1.5">
+                            <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">City</label>
+                            <input
+                              type="text" required
+                              value={donorRegisterForm.city}
+                              onChange={(e) => setDonorRegisterForm({ ...donorRegisterForm, city: e.target.value })}
+                              className={`w-full bg-slate-950 border ${validationErrors.city ? 'border-red-500' : 'border-slate-800'} rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors`}
+                              placeholder="Hubballi"
+                            />
+                            {validationErrors.city && <p className="text-[10px] text-red-450 mt-1">⚠️ {validationErrors.city}</p>}
+                          </div>
+                          
+                          <div className="space-y-1.5">
+                            <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">State</label>
+                            <input
+                              type="text" required
+                              value={donorRegisterForm.state}
+                              onChange={(e) => setDonorRegisterForm({ ...donorRegisterForm, state: e.target.value })}
+                              className={`w-full bg-slate-950 border ${validationErrors.state ? 'border-red-500' : 'border-slate-800'} rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors`}
+                              placeholder="Karnataka"
+                            />
+                            {validationErrors.state && <p className="text-[10px] text-red-450 mt-1">⚠️ {validationErrors.state}</p>}
+                          </div>
+                        </div>
+
+                        <div className="p-4 bg-slate-950 rounded-2xl border border-slate-850 space-y-3.5">
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="font-bold text-slate-200 flex items-center gap-1 font-mono uppercase tracking-wider text-[10px]">
+                              <MapPin className="w-3.5 h-3.5 text-red-500 animate-bounce" />
+                              GPS Coordinates
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (navigator.geolocation) {
+                                  triggerToast("Acquiring high-accuracy GPS coordinates...", "info");
+                                  navigator.geolocation.getCurrentPosition(
+                                    (position) => {
+                                      const { latitude, longitude } = position.coords;
+                                      setDonorRegisterForm({
+                                        ...donorRegisterForm,
+                                        latitude: latitude.toFixed(6),
+                                        longitude: longitude.toFixed(6)
+                                      });
+                                      triggerToast("GPS Lock acquired successfully!", "success");
+                                    },
+                                    (err) => {
+                                      triggerToast("GPS access denied. Using random local displacement.", "warning");
+                                      setDonorRegisterForm({
+                                        ...donorRegisterForm,
+                                        latitude: (12.9650 + (Math.random() - 0.5) * 0.08).toFixed(6),
+                                        longitude: (77.5870 + (Math.random() - 0.5) * 0.08).toFixed(6)
+                                      });
+                                    }
+                                  );
+                                } else {
+                                  triggerToast("Browser Geolocation is not supported.", "error");
+                                }
+                              }}
+                              className="text-[9px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-450 font-bold px-2 py-0.5 rounded cursor-pointer uppercase font-mono"
+                            >
+                              📍 Get GPS Coordinates
+                            </button>
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-3 text-xs font-mono">
+                            <div className="space-y-1">
+                              <span className="block text-[8.5px] text-slate-500 uppercase">Latitude</span>
+                              <input
+                                type="text"
+                                value={donorRegisterForm.latitude}
+                                onChange={(e) => setDonorRegisterForm({ ...donorRegisterForm, latitude: e.target.value })}
+                                className="w-full bg-slate-905 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none"
+                                placeholder="12.9716"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <span className="block text-[8.5px] text-slate-500 uppercase">Longitude</span>
+                              <input
+                                type="text"
+                                value={donorRegisterForm.longitude}
+                                onChange={(e) => setDonorRegisterForm({ ...donorRegisterForm, longitude: e.target.value })}
+                                className="w-full bg-slate-905 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none"
+                                placeholder="77.5946"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-4">
+                          <button
+                            type="button"
+                            onClick={handleWizardBack}
+                            className="w-1/3 py-3 bg-slate-950 border border-slate-800 hover:border-slate-700 text-slate-350 font-bold text-xs rounded-xl cursor-pointer uppercase font-mono"
+                          >
+                            ◀ Back
+                          </button>
+                          <button
+                            type="submit"
+                            className="w-2/3 py-3 bg-red-655 hover:bg-red-600 text-white font-extrabold text-xs rounded-xl shadow-lg cursor-pointer border-none uppercase tracking-wider font-mono"
+                          >
+                            Next: Health Screening ➔
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* STEP 3: CLINICAL HEALTH SCREENING SCREEN */}
+                    {registrationStep === 3 && (
+                      <div className="space-y-4 animate-in fade-in duration-200">
+                        
+                        <div className="p-4 bg-red-500/5 border border-red-500/10 rounded-2xl flex items-start gap-2.5">
+                          <ShieldAlert className="w-4.5 h-4.5 text-red-500 mt-0.5 animate-pulse flex-shrink-0" />
+                          <div>
+                            <span className="block text-[10px] font-black uppercase text-red-405 font-mono">Clinical Screening Assessment</span>
+                            <p className="text-[10px] text-slate-400 leading-normal mt-0.5">Please check any of the following clinical items if they apply to your health state to calibrate matching eligibility.</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
+                          {[
+                            { disease: "Diabetes", desc: "Insulin-dependent diabetes mellitus" },
+                            { disease: "Hypertension", desc: "Uncontrolled or severe blood pressure issues" },
+                            { disease: "TattooPiercing", desc: "Received a tattoo or piercing within the past 12 months" },
+                            { disease: "PrescriptionMeds", desc: "Currently on antibiotics, blood thinners, or heavy medications" },
+                            { disease: "CardioIssues", desc: "History of heart disease, cardiovascular issues, or chest pains" },
+                            { disease: "EndemicTravel", desc: "Traveled to malaria or dengue-endemic zones in the last 6 months" },
+                            { disease: "RecentSurgeries", desc: "Underwent any major surgical procedures in the last 12 months" }
+                          ].map((item) => (
+                            <div
+                              key={item.disease}
+                              onClick={() => handleCheckboxChange(item.disease)}
+                              className={`p-3 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${
+                                donorRegisterForm.eligibilityFlags.includes(item.disease)
+                                  ? 'bg-red-500/5 border-red-500/35 text-white'
+                                  : 'bg-slate-950 border-slate-800 hover:border-slate-750 text-slate-350'
+                              }`}
+                            >
+                              <div className="text-left">
+                                <span className="text-xs font-bold block">{item.disease === 'TattooPiercing' ? 'Recent Tattoo/Piercing' : item.disease === 'PrescriptionMeds' ? 'Active Medications' : item.disease === 'EndemicTravel' ? 'Malaria Zone Travel' : item.disease}</span>
+                                <span className="text-[9px] text-slate-500 block mt-0.5 leading-none">{item.desc}</span>
+                              </div>
+                              <div className={`w-4.5 h-4.5 rounded flex items-center justify-center border ${
+                                donorRegisterForm.eligibilityFlags.includes(item.disease)
+                                  ? 'bg-red-500 border-red-400 text-white'
+                                  : 'border-slate-700 bg-slate-905'
+                              }`}>
+                                {donorRegisterForm.eligibilityFlags.includes(item.disease) && <Check className="w-3.5 h-3.5" />}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="space-y-1.5 text-left">
+                          <label className="block text-[9.5px] font-bold text-slate-400 uppercase tracking-wider font-mono">Last Blood Donation Date</label>
+                          <input
+                            type="date"
+                            value={donorRegisterForm.lastDonatedDate}
+                            onChange={(e) => setDonorRegisterForm({ ...donorRegisterForm, lastDonatedDate: e.target.value })}
+                            className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-red-500 transition-colors font-mono"
+                          />
+                          <span className="text-[9px] text-slate-500 block">Leave completely blank if first-time voluntary blood donor.</span>
+                        </div>
+
+                        <hr className="border-slate-850" />
+
+                        {/* Active Consent Sliders */}
+                        <div
+                          onClick={() => setDonorRegisterForm({ ...donorRegisterForm, consentChecked: !donorRegisterForm.consentChecked })}
+                          className={`p-4 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all ${
+                            donorRegisterForm.consentChecked 
+                              ? 'bg-red-650/5 border-red-500/25 text-white' 
+                              : 'bg-slate-950 border-slate-800 text-slate-455 hover:border-slate-700'
+                          }`}
+                        >
+                          <div className={`w-5 h-5 rounded-lg flex items-center justify-center border flex-shrink-0 ${
+                            donorRegisterForm.consentChecked 
+                              ? 'bg-red-500 border-red-400 text-white shadow-sm' 
+                              : 'border-slate-700 bg-slate-905'
+                          }`}>
+                            {donorRegisterForm.consentChecked && <Check className="w-4 h-4" />}
+                          </div>
+                          <p className="text-[10px] leading-relaxed text-left font-sans font-medium">
+                            I verify that I have filled out the clinical screening questionnaire honestly. I consent to let OneBlood coordinates contact me in case of emergency needs.
+                          </p>
+                        </div>
+                        {validationErrors.consent && <p className="text-[10px] text-red-450 text-left font-mono">⚠️ {validationErrors.consent}</p>}
+
+                        <div className="flex gap-4">
+                          <button
+                            type="button"
+                            onClick={handleWizardBack}
+                            className="w-1/3 py-3 bg-slate-950 border border-slate-800 hover:border-slate-700 text-slate-350 font-bold text-xs rounded-xl cursor-pointer uppercase font-mono"
+                          >
+                            ◀ Back
+                          </button>
+                          <button
+                            type="button"
+                            onClick={handleDonorRegister}
+                            className="w-2/3 py-3 bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs rounded-xl shadow-lg cursor-pointer border-none uppercase tracking-wider font-mono flex items-center justify-center gap-1.5"
+                          >
+                            Register Voluntary Donor ➔
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </form>
                 ) : (
                   <form onSubmit={handlePatientRegister} className="space-y-4">
                     

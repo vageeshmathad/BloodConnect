@@ -811,11 +811,19 @@ Key rendering steps:
    - Sky-blue institutional buildings represent blood banks.
    - A pulsing white circle outlines the maximum radial boundary, giving users instant visual feedback of the search coverage.
 
-### **8.2 Three-Step Stepped Clinical Requisition Wizard**
-To collect vital medical information without causing user interface fatigue, OneBlood features a structured, three-step clinical onboarding wizard inside the Profile Page:
-* **Step 1: Core Biometrics**: Prompts users for weight and age. It implements instant client-side validation, rejecting registrations if the weight is under 45kg or if the age is outside the safe donation window (18 to 65 years).
-* **Step 2: Location Mapping**: Renders the Leaflet map panel, letting donors click to pin their location, which auto-fills the latitude and longitude coordinate inputs.
-* **Step 3: Medical History & Consent**: Collects historical medical records and requires active confirmation of donor consent before saving the profile.
+### **8.2 Three-Step Stepped Clinical Voluntary Donor Wizard**
+To collect vital medical information and screen donor suitability without causing user interface fatigue, OneBlood features a structured, three-step clinical onboarding wizard inside the Donor Registration flow:
+* **Step 1: Core Account & Biometrics**: Prompts the user for biological and account parameters. It captures the full name, required blood group, phone number, age, and weight. It implements instant client-side validation, rejecting registrations if the age is under 18 years or weight is under 45kg to maintain safe clinical parameters.
+* **Step 2: Geolocation & Coordinate Locks**: Pre-populates location details (Karnataka, Hubballi) and renders a high-accuracy GPS tracking locator. Donors can click a dedicated button which invokes standard browser Geolocation APIs to lock their active latitude and longitude coordinates automatically.
+* **Step 3: Clinical Health Screening Questionnaire & Consent**: Presents an exhaustive clinical suitability checklist assessing key medical conditions:
+  - **Diabetes**: Checks for insulin-dependent diabetes mellitus.
+  - **Hypertension**: Identifies severe or uncontrolled blood pressure issues.
+  - **Recent Tattoo/Piercing**: Flags any procedures within the past 12 months.
+  - **Active Prescription Medications**: Tracks antibiotic or blood thinner usage.
+  - **Cardiovascular Issues**: Logs history of heart disease or chest pains.
+  - **Travel to Endemic Zones**: Flags malaria or dengue exposure in the last 6 months.
+  - **Recent Surgeries**: Logs major operations in the past year.
+  - **Consent Gate**: Requires active confirmation of consent before saving the profile and redirecting the donor straight to the Voluntary Donor Dashboard.
 
 ### **8.3 Platform State Management (`authStore` & `notificationStore`)**
 The application relies on decoupled reactive state stores:
