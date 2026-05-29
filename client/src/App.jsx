@@ -273,11 +273,17 @@ export default function App() {
   };
 
   // --- Auth Session States ---
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userRole, setUserRole] = useState(null); // 'patient', 'donor', 'blood_bank', 'admin'
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return localStorage.getItem('oneblood_is_logged_in') === 'true';
+  });
+  const [userRole, setUserRole] = useState(() => {
+    return localStorage.getItem('oneblood_user_role') || null;
+  }); // 'patient', 'donor', 'blood_bank', 'admin'
   const [authMode, setAuthMode] = useState('select'); // 'select', 'login', 'register'
   const [activeLoginType, setActiveLoginType] = useState('patient'); // 'patient', 'donor', 'blood_bank', 'admin'
-  const [oneBloodId, setOneBloodId] = useState('OB-782910');
+  const [oneBloodId, setOneBloodId] = useState(() => {
+    return localStorage.getItem('oneblood_id') || 'OB-782910';
+  });
 
   // --- Form inputs for onboarding ---
   const [signUpForm, setSignUpForm] = useState({
@@ -348,7 +354,17 @@ export default function App() {
   const [questionnaireCollapsed, setQuestionnaireCollapsed] = useState(true);
 
   // --- Donor Auth States ---
-  const [loggedInDonor, setLoggedInDonor] = useState(null);
+  const [loggedInDonor, setLoggedInDonor] = useState(() => {
+    const saved = localStorage.getItem('oneblood_logged_in_donor');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error("Failed to parse saved logged in donor", e);
+      }
+    }
+    return null;
+  });
   const [donorLoginForm, setDonorLoginForm] = useState({ email: '', password: '' });
   const [donorLoginError, setDonorLoginError] = useState('');
   const [donorLoading, setDonorLoading] = useState(false);
@@ -437,6 +453,22 @@ export default function App() {
     if (darkMode) root.classList.add('dark');
     else root.classList.remove('dark');
   }, [darkMode]);
+
+  // Sync Active Auth Session State to localStorage for full browser refresh persistence
+  useEffect(() => {
+    localStorage.setItem('oneblood_is_logged_in', isLoggedIn ? 'true' : 'false');
+    if (userRole) {
+      localStorage.setItem('oneblood_user_role', userRole);
+    } else {
+      localStorage.removeItem('oneblood_user_role');
+    }
+    localStorage.setItem('oneblood_id', oneBloodId);
+    if (loggedInDonor) {
+      localStorage.setItem('oneblood_logged_in_donor', JSON.stringify(loggedInDonor));
+    } else {
+      localStorage.removeItem('oneblood_logged_in_donor');
+    }
+  }, [isLoggedIn, userRole, oneBloodId, loggedInDonor]);
 
   // Ping Backend Health status on boot
   const verifyBackendStatus = async () => {
